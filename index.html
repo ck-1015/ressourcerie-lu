@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ressourcerie.lu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue-50: #EBF3FB; --blue-100: #C0D9F3; --blue-200: #90BDE8;
+      --blue-400: #3A82C4; --blue-600: #1A5FA0; --blue-800: #0D3F6E; --blue-900: #082849;
+      --slate-50: #F0F4F8; --slate-100: #D0DCE8; --slate-200: #A8BCCE;
+      --slate-600: #4A6378; --slate-800: #2C3E50; --slate-900: #1A2530;
+      --amber-50: #FEF3E2; --amber-100: #FDD99A; --amber-400: #D4900A; --amber-600: #9A6500;
+      --teal-50: #E2F4F1; --teal-100: #A0DDD6; --teal-600: #0D7A6F; --teal-800: #085049;
+      --bg: #F0F4F8;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--slate-900); min-height: 100vh; }
+
+    /* NAV */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem; background: white;
+      border-bottom: 1px solid var(--slate-100);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 400; color: var(--blue-800); letter-spacing: -0.02em; cursor: pointer; }
+    .logo span { color: var(--amber-400); font-style: italic; }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a { font-size: 0.875rem; color: var(--slate-600); text-decoration: none; font-weight: 400; cursor: pointer; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--blue-600); }
+    .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+    .nav-cta { background: var(--blue-800); color: white; border: none; padding: 0.5rem 1.25rem; border-radius: 100px; font-size: 0.875rem; font-family: 'DM Sans', sans-serif; cursor: pointer; font-weight: 500; transition: background 0.2s; }
+    .nav-cta:hover { background: var(--blue-600); }
+
+    /* LANGUAGE DROPDOWN */
+    .lang-dropdown { position: relative; }
+    .lang-btn {
+      display: flex; align-items: center; gap: 0.4rem;
+      background: var(--slate-50); border: 1px solid var(--slate-100);
+      border-radius: 100px; padding: 0.4rem 0.85rem;
+      font-size: 0.82rem; font-family: 'DM Sans', sans-serif;
+      cursor: pointer; color: var(--slate-800); transition: all 0.2s;
+    }
+    .lang-btn:hover { border-color: var(--slate-200); }
+    .lang-flag { font-size: 1rem; line-height: 1; }
+    .lang-caret { font-size: 0.6rem; color: var(--slate-600); transition: transform 0.2s; }
+    .lang-dropdown.open .lang-caret { transform: rotate(180deg); }
+    .lang-menu {
+      display: none; position: absolute; right: 0; top: calc(100% + 8px);
+      background: white; border: 1px solid var(--slate-100); border-radius: 12px;
+      overflow: hidden; min-width: 170px; z-index: 200;
+    }
+    .lang-dropdown.open .lang-menu { display: block; }
+    .lang-option {
+      display: flex; align-items: center; gap: 0.65rem;
+      padding: 0.65rem 1rem; font-size: 0.85rem; cursor: pointer;
+      color: var(--slate-800); transition: background 0.15s;
+    }
+    .lang-option:hover { background: var(--slate-50); }
+    .lang-option.active { background: var(--blue-50); color: var(--blue-800); font-weight: 500; }
+
+    /* PAGES */
+    .page { display: none; animation: fadeIn 0.25s ease; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* HERO */
+    .hero { padding: 5rem 2rem 4rem; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .hero-label { display: inline-block; background: var(--blue-50); color: var(--blue-800); font-size: 0.75rem; font-weight: 500; padding: 0.35rem 0.85rem; border-radius: 100px; margin-bottom: 1.5rem; letter-spacing: 0.05em; text-transform: uppercase; }
+    .hero h1 { font-family: 'Fraunces', serif; font-size: 3.2rem; font-weight: 300; line-height: 1.15; color: var(--slate-900); margin-bottom: 1.25rem; letter-spacing: -0.02em; }
+    .hero h1 em { color: var(--blue-600); font-style: italic; }
+    .hero p { font-size: 1rem; line-height: 1.7; color: var(--slate-600); margin-bottom: 2rem; max-width: 480px; }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary { background: var(--blue-800); color: white; border: none; padding: 0.75rem 1.75rem; border-radius: 100px; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; cursor: pointer; font-weight: 500; transition: background 0.2s; }
+    .btn-primary:hover { background: var(--blue-600); }
+    .btn-secondary { background: transparent; color: var(--slate-800); border: 1px solid var(--slate-200); padding: 0.75rem 1.75rem; border-radius: 100px; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; cursor: pointer; font-weight: 400; transition: all 0.2s; }
+    .btn-secondary:hover { border-color: var(--slate-600); }
+
+    /* HERO VISUAL */
+    .hero-visual { background: white; border-radius: 20px; border: 1px solid var(--slate-100); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+    .hero-map-placeholder { background: var(--blue-50); border-radius: 12px; height: 180px; position: relative; overflow: hidden; }
+    .map-dots { position: relative; width: 100%; height: 100%; }
+    .map-dot { position: absolute; width: 10px; height: 10px; border-radius: 50%; background: var(--blue-600); }
+    .map-dot.storage { background: var(--amber-400); width: 12px; height: 12px; }
+    .hero-listing-card { display: flex; align-items: center; gap: 1rem; background: var(--slate-50); border-radius: 10px; padding: 0.85rem 1rem; }
+    .listing-icon { width: 42px; height: 42px; border-radius: 8px; background: var(--teal-50); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .listing-info { flex: 1; }
+    .listing-info strong { display: block; font-size: 0.875rem; font-weight: 500; color: var(--slate-900); }
+    .listing-info span { font-size: 0.78rem; color: var(--slate-600); }
+    .listing-price { font-family: 'Fraunces', serif; font-size: 1rem; color: var(--blue-600); }
+    .availability-badge { font-size: 0.7rem; background: var(--blue-50); color: var(--blue-800); padding: 0.2rem 0.6rem; border-radius: 100px; font-weight: 500; }
+
+    /* STATS */
+    .stats-bar { background: var(--blue-800); padding: 2rem; display: flex; justify-content: center; gap: 5rem; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-num { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 300; color: white; display: block; }
+    .stat-label { font-size: 0.8rem; color: var(--blue-100); margin-top: 0.25rem; }
+
+    /* FEATURES */
+    .features { max-width: 1100px; margin: 5rem auto; padding: 0 2rem; }
+    .section-label { font-size: 0.75rem; font-weight: 500; color: var(--blue-600); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+    .section-title { font-family: 'Fraunces', serif; font-size: 2.2rem; font-weight: 300; color: var(--slate-900); margin-bottom: 3rem; letter-spacing: -0.02em; max-width: 500px; }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .feature-card { background: white; border-radius: 16px; padding: 1.75rem; border: 1px solid var(--slate-100); transition: transform 0.2s; cursor: pointer; }
+    .feature-card:hover { transform: translateY(-2px); }
+    .feature-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 1rem; }
+    .feature-icon.blue { background: var(--blue-50); }
+    .feature-icon.amber { background: var(--amber-50); }
+    .feature-icon.teal { background: var(--teal-50); }
+    .feature-card h3 { font-size: 0.95rem; font-weight: 500; color: var(--slate-900); margin-bottom: 0.5rem; }
+    .feature-card p { font-size: 0.85rem; line-height: 1.6; color: var(--slate-600); }
+
+    /* BROWSE */
+    .browse-layout { display: grid; grid-template-columns: 280px 1fr; min-height: calc(100vh - 61px); }
+    .filters-panel { background: white; border-right: 1px solid var(--slate-100); padding: 1.5rem; }
+    .filters-panel h3 { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 400; margin-bottom: 1.25rem; color: var(--slate-900); }
+    .filter-group { margin-bottom: 1.5rem; }
+    .filter-group label { display: block; font-size: 0.78rem; font-weight: 500; color: var(--slate-600); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem; }
+    .filter-option { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--slate-800); margin-bottom: 0.4rem; cursor: pointer; }
+    .filter-option input { accent-color: var(--blue-600); cursor: pointer; }
+    .search-bar { display: flex; align-items: center; gap: 0.75rem; background: var(--slate-50); border: 1px solid var(--slate-100); border-radius: 100px; padding: 0.6rem 1rem; margin-bottom: 1.25rem; }
+    .search-bar input { border: none; background: transparent; font-size: 0.875rem; font-family: 'DM Sans', sans-serif; color: var(--slate-900); outline: none; flex: 1; }
+    .browse-content { padding: 1.5rem; background: var(--bg); }
+    .browse-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+    .browse-header h2 { font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 400; color: var(--slate-900); }
+    .view-tabs { display: flex; gap: 0.5rem; }
+    .view-tab { padding: 0.4rem 0.9rem; border-radius: 100px; font-size: 0.8rem; cursor: pointer; border: 1px solid var(--slate-100); background: white; font-family: 'DM Sans', sans-serif; color: var(--slate-600); transition: all 0.2s; }
+    .view-tab.active { background: var(--blue-800); color: white; border-color: var(--blue-800); }
+    .listings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+    .listing-card { background: white; border-radius: 14px; overflow: hidden; border: 1px solid var(--slate-100); cursor: pointer; transition: transform 0.2s; }
+    .listing-card:hover { transform: translateY(-2px); }
+    .listing-thumb { height: 140px; background: var(--blue-50); display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+    .listing-thumb.amber-bg { background: var(--amber-50); }
+    .listing-thumb.teal-bg { background: var(--teal-50); }
+    .listing-thumb.slate-bg { background: var(--slate-50); }
+    .listing-body { padding: 1rem; }
+    .listing-body h4 { font-size: 0.9rem; font-weight: 500; color: var(--slate-900); margin-bottom: 0.25rem; }
+    .listing-meta { font-size: 0.78rem; color: var(--slate-600); margin-bottom: 0.6rem; }
+    .listing-footer { display: flex; justify-content: space-between; align-items: center; }
+    .listing-rate { font-family: 'Fraunces', serif; font-size: 1rem; color: var(--blue-600); }
+    .listing-rate span { font-family: 'DM Sans', sans-serif; font-size: 0.75rem; color: var(--slate-600); font-weight: 400; }
+    .tag { font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 100px; background: var(--blue-50); color: var(--blue-800); font-weight: 500; }
+    .tag.amber { background: var(--amber-50); color: var(--amber-600); }
+    .tag.teal { background: var(--teal-50); color: var(--teal-600); }
+
+    /* DETAIL */
+    .detail-layout { max-width: 980px; margin: 0 auto; padding: 2rem; display: grid; grid-template-columns: 1fr 340px; gap: 2rem; }
+    .detail-thumb { height: 260px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 5rem; margin-bottom: 1.5rem; }
+    .detail-title { font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 300; margin-bottom: 0.5rem; }
+    .detail-meta { font-size: 0.875rem; color: var(--slate-600); margin-bottom: 1.25rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+    .detail-section { margin-bottom: 1.5rem; }
+    .detail-section h4 { font-size: 0.85rem; font-weight: 500; color: var(--slate-600); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem; }
+    .detail-section p { font-size: 0.9rem; line-height: 1.7; color: var(--slate-800); }
+    .booking-card { background: white; border-radius: 16px; border: 1px solid var(--slate-100); padding: 1.5rem; position: sticky; top: 80px; }
+    .booking-price { font-family: 'Fraunces', serif; font-size: 1.8rem; color: var(--blue-600); margin-bottom: 1rem; }
+    .booking-price span { font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--slate-600); font-weight: 400; }
+    .form-field { margin-bottom: 1rem; }
+    .form-field label { display: block; font-size: 0.78rem; font-weight: 500; color: var(--slate-600); margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .form-field input, .form-field select, .form-field textarea { width: 100%; padding: 0.6rem 0.85rem; border: 1px solid var(--slate-100); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; background: var(--slate-50); color: var(--slate-900); outline: none; transition: border-color 0.2s; }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: var(--blue-600); }
+    .booking-summary { background: var(--slate-50); border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+    .summary-row { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.4rem; color: var(--slate-800); }
+    .summary-row.total { font-weight: 500; color: var(--slate-900); border-top: 1px solid var(--slate-100); padding-top: 0.6rem; margin-top: 0.4rem; }
+    .incentive-banner { background: var(--teal-50); border-radius: 8px; padding: 0.75rem; font-size: 0.78rem; color: var(--teal-600); margin-bottom: 1rem; border-left: 3px solid var(--teal-600); }
+
+    /* STORAGE */
+    .storage-layout { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    .storage-header { margin-bottom: 1.5rem; }
+    .storage-header h2 { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 300; margin-bottom: 0.5rem; }
+    .storage-header p { font-size: 0.9rem; color: var(--slate-600); }
+    .storage-top { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; align-items: start; }
+    .storage-list { display: flex; flex-direction: column; gap: 1rem; }
+    .storage-card { background: white; border-radius: 14px; padding: 1.25rem; border: 1px solid var(--slate-100); display: flex; gap: 1rem; cursor: pointer; transition: all 0.2s; }
+    .storage-card:hover, .storage-card.selected { transform: translateY(-1px); border-color: var(--blue-400); }
+    .storage-card-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+    .storage-card-icon.blue { background: var(--blue-50); }
+    .storage-card-icon.amber { background: var(--amber-50); }
+    .storage-card-icon.teal { background: var(--teal-50); }
+    .storage-card-info { flex: 1; min-width: 0; }
+    .storage-card-info h4 { font-size: 0.9rem; font-weight: 500; color: var(--slate-900); margin-bottom: 0.2rem; }
+    .storage-card-info p { font-size: 0.78rem; color: var(--slate-600); margin-bottom: 0.4rem; }
+    .storage-details { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .storage-detail { font-size: 0.72rem; color: var(--slate-600); }
+    .storage-detail strong { color: var(--slate-900); }
+    .storage-price-badge { font-family: 'Fraunces', serif; font-size: 0.95rem; color: var(--blue-600); white-space: nowrap; flex-shrink: 0; }
+
+    /* MAP */
+    .map-panel { background: white; border-radius: 16px; border: 1px solid var(--slate-100); overflow: hidden; position: sticky; top: 80px; }
+    .map-search-bar { padding: 1rem; border-bottom: 1px solid var(--slate-100); display: flex; gap: 0.5rem; }
+    .map-search-bar input { flex: 1; padding: 0.55rem 0.85rem; border: 1px solid var(--slate-100); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; background: var(--slate-50); outline: none; color: var(--slate-900); }
+    .map-search-bar input:focus { border-color: var(--blue-600); }
+    .map-search-btn { background: var(--blue-800); color: white; border: none; padding: 0.55rem 1rem; border-radius: 8px; font-size: 0.8rem; cursor: pointer; font-family: 'DM Sans', sans-serif; white-space: nowrap; }
+    .map-search-btn:hover { background: var(--blue-600); }
+    .map-canvas { position: relative; height: 420px; background: #dce8f0; overflow: hidden; }
+    .map-grid { position: absolute; inset: 0; }
+    .map-road-h { position: absolute; background: white; height: 2px; opacity: 0.6; }
+    .map-road-v { position: absolute; background: white; width: 2px; opacity: 0.6; }
+    .map-road-h.major { height: 4px; opacity: 0.8; }
+    .map-road-v.major { width: 4px; opacity: 0.8; }
+    .map-block { position: absolute; background: #c8d8e4; border-radius: 3px; }
+    .map-pin { position: absolute; transform: translate(-50%, -100%); cursor: pointer; transition: transform 0.2s; z-index: 10; }
+    .map-pin:hover { transform: translate(-50%, -110%); z-index: 20; }
+    .map-pin-dot { width: 28px; height: 28px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+    .map-pin-dot span { transform: rotate(45deg); font-size: 0.85rem; }
+    .map-pin.blue .map-pin-dot { background: var(--blue-600); }
+    .map-pin.amber .map-pin-dot { background: var(--amber-400); }
+    .map-pin.user .map-pin-dot { background: #e24b4a; }
+    .map-tooltip { position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%); background: white; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.75rem; white-space: nowrap; border: 1px solid var(--slate-100); display: none; pointer-events: none; color: var(--slate-900); min-width: 140px; text-align: center; }
+    .map-pin:hover .map-tooltip { display: block; }
+    .map-legend { position: absolute; bottom: 0.75rem; left: 0.75rem; background: white; border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.72rem; display: flex; gap: 0.85rem; border: 1px solid var(--slate-100); }
+    .map-legend-item { display: flex; align-items: center; gap: 0.35rem; color: var(--slate-600); }
+    .map-legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .map-result-label { position: absolute; top: 0.75rem; left: 50%; transform: translateX(-50%); background: var(--blue-800); color: white; border-radius: 100px; padding: 0.35rem 0.85rem; font-size: 0.75rem; font-weight: 500; display: none; white-space: nowrap; }
+    .map-result-label.show { display: block; }
+
+    /* SCHEDULE */
+    .schedule-layout { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    .calendar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .cal-nav { background: none; border: 1px solid var(--slate-100); border-radius: 8px; padding: 0.35rem 0.65rem; cursor: pointer; font-size: 0.8rem; font-family: 'DM Sans', sans-serif; }
+    .cal-nav:hover { background: var(--slate-50); }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .cal-day-name { text-align: center; font-size: 0.7rem; color: var(--slate-600); font-weight: 500; padding: 0.25rem; }
+    .cal-day { text-align: center; font-size: 0.8rem; padding: 0.4rem 0.25rem; border-radius: 6px; cursor: pointer; color: var(--slate-800); transition: background 0.15s; }
+    .cal-day:hover:not(.empty) { background: var(--blue-50); }
+    .cal-day.booked { background: var(--amber-50); color: var(--amber-600); font-weight: 500; }
+    .cal-day.available { background: var(--blue-50); color: var(--blue-800); font-weight: 500; }
+    .cal-day.today { background: var(--blue-800); color: white; font-weight: 500; }
+    .cal-day.empty { cursor: default; }
+    .bookings-list { background: white; border-radius: 14px; padding: 1.25rem; border: 1px solid var(--slate-100); }
+    .bookings-list h3 { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 400; margin-bottom: 1rem; }
+    .booking-item { display: flex; gap: 1rem; align-items: flex-start; padding: 0.85rem 0; border-bottom: 1px solid var(--slate-50); }
+    .booking-item:last-child { border-bottom: none; }
+    .booking-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--blue-600); flex-shrink: 0; margin-top: 4px; }
+    .booking-dot.amber { background: var(--amber-400); }
+    .booking-item-info strong { display: block; font-size: 0.875rem; font-weight: 500; color: var(--slate-900); }
+    .booking-item-info span { font-size: 0.78rem; color: var(--slate-600); }
+
+    /* PROFILE */
+    .profile-layout { max-width: 900px; margin: 0 auto; padding: 2rem; }
+    .profile-header-card { background: white; border-radius: 16px; padding: 2rem; border: 1px solid var(--slate-100); display: flex; gap: 1.5rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--blue-100); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 1.5rem; color: var(--blue-800); flex-shrink: 0; }
+    .profile-name { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 300; color: var(--slate-900); }
+    .profile-sub { font-size: 0.875rem; color: var(--slate-600); margin-top: 0.25rem; }
+    .verified-badge { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.75rem; background: var(--blue-50); color: var(--blue-800); padding: 0.25rem 0.65rem; border-radius: 100px; margin-top: 0.5rem; font-weight: 500; }
+    .profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    .profile-stat-card { background: white; border-radius: 12px; padding: 1.25rem; border: 1px solid var(--slate-100); text-align: center; }
+    .profile-stat-num { font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 300; color: var(--slate-900); }
+    .profile-stat-label { font-size: 0.78rem; color: var(--slate-600); margin-top: 0.25rem; }
+    .my-listings-section h3 { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 400; margin-bottom: 1rem; }
+    .my-listing-row { background: white; border-radius: 12px; padding: 1rem 1.25rem; border: 1px solid var(--slate-100); display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; }
+    .my-listing-icon { width: 40px; height: 40px; border-radius: 8px; background: var(--blue-50); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+    .my-listing-info { flex: 1; }
+    .my-listing-info strong { display: block; font-size: 0.9rem; font-weight: 500; }
+    .my-listing-info span { font-size: 0.78rem; color: var(--slate-600); }
+    .status-pill { font-size: 0.72rem; padding: 0.25rem 0.65rem; border-radius: 100px; font-weight: 500; white-space: nowrap; }
+    .status-pill.active { background: var(--blue-50); color: var(--blue-800); }
+    .status-pill.rented { background: var(--amber-50); color: var(--amber-600); }
+    .edit-btn { font-size: 0.78rem; color: var(--slate-600); background: var(--slate-50); border: 1px solid var(--slate-100); padding: 0.3rem 0.75rem; border-radius: 100px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+    .edit-btn:hover { background: var(--slate-100); }
+
+    /* DROPOFF */
+    .dropoff-calc { background: var(--slate-50); border-radius: 12px; padding: 1.25rem; margin-top: 1.5rem; }
+    .dropoff-calc h4 { font-size: 0.85rem; font-weight: 500; margin-bottom: 0.75rem; color: var(--slate-900); }
+    .dropoff-option { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.85rem; border-radius: 8px; margin-bottom: 0.5rem; border: 1px solid var(--slate-100); background: white; cursor: pointer; transition: all 0.15s; }
+    .dropoff-option:hover { border-color: var(--blue-600); }
+    .dropoff-option.selected { border-color: var(--blue-600); background: var(--blue-50); }
+    .dropoff-option input { accent-color: var(--blue-600); }
+    .dropoff-label { flex: 1; font-size: 0.85rem; color: var(--slate-800); }
+    .dropoff-badge { font-size: 0.72rem; padding: 0.2rem 0.55rem; border-radius: 100px; font-weight: 500; }
+    .dropoff-badge.discount { background: var(--teal-50); color: var(--teal-600); }
+    .dropoff-badge.surcharge { background: #FCEBEB; color: #A32D2D; }
+    .dropoff-badge.neutral { background: var(--slate-50); color: var(--slate-600); }
+
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: white; border-radius: 20px; padding: 2rem; max-width: 480px; width: 100%; position: relative; animation: fadeIn 0.2s ease; max-height: 90vh; overflow-y: auto; }
+    .modal-close { position: absolute; top: 1rem; right: 1rem; background: var(--slate-50); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
+    .modal-close:hover { background: var(--slate-100); }
+    .modal h2 { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 300; margin-bottom: 0.5rem; }
+    .modal p { font-size: 0.875rem; color: var(--slate-600); margin-bottom: 1.25rem; line-height: 1.6; }
+    .modal-actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; }
+    .list-form { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .list-form .full-width { grid-column: 1 / -1; }
+    .auth-tabs { display: flex; border-bottom: 1px solid var(--slate-100); margin-bottom: 1.25rem; }
+    .auth-tab { padding: 0.5rem 1rem; font-size: 0.875rem; cursor: pointer; color: var(--slate-600); border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; }
+    .auth-tab.active { color: var(--blue-800); border-bottom-color: var(--blue-800); font-weight: 500; }
+    .storage-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.5rem; }
+    .time-slot { padding: 0.5rem; text-align: center; border: 1px solid var(--slate-100); border-radius: 8px; font-size: 0.8rem; cursor: pointer; transition: all 0.15s; color: var(--slate-800); }
+    .time-slot:hover { border-color: var(--blue-600); }
+    .time-slot.selected { background: var(--blue-800); color: white; border-color: var(--blue-800); }
+    .time-slot.unavailable { background: var(--slate-50); color: var(--slate-200); cursor: not-allowed; }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--blue-800); color: white; padding: 0.75rem 1.5rem; border-radius: 100px; font-size: 0.875rem; z-index: 300; transition: transform 0.3s ease; pointer-events: none; white-space: nowrap; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 2rem; padding: 3rem 1.5rem 2rem; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .browse-layout { grid-template-columns: 1fr; }
+      .filters-panel { display: none; }
+      .detail-layout { grid-template-columns: 1fr; }
+      .calendar-grid { grid-template-columns: 1fr; }
+      .storage-top { grid-template-columns: 1fr; }
+      .profile-stats { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+      .stats-bar { gap: 2rem; }
+      .list-form { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 540px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .profile-stats { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" onclick="showPage('home')">ressourcerie<span>.lu</span></div>
+  <div class="nav-links">
+    <a onclick="showPage('browse')" data-i18n="nav_browse">Browse props</a>
+    <a onclick="showPage('storage')" data-i18n="nav_storage">Find storage</a>
+    <a onclick="showPage('schedule')" data-i18n="nav_schedule">My schedule</a>
+    <a onclick="showPage('profile')" data-i18n="nav_profile">My profile</a>
+  </div>
+  <div class="nav-right">
+    <div class="lang-dropdown" id="lang-dropdown">
+      <button class="lang-btn" onclick="toggleLang()">
+        <span class="lang-flag" id="lang-flag">🇬🇧</span>
+        <span id="lang-label">English</span>
+        <span class="lang-caret">▼</span>
+      </button>
+      <div class="lang-menu">
+        <div class="lang-option active" onclick="setLang('en')"><span class="lang-flag">🇬🇧</span> English</div>
+        <div class="lang-option" onclick="setLang('fr')"><span class="lang-flag">🇫🇷</span> Français</div>
+        <div class="lang-option" onclick="setLang('de')"><span class="lang-flag">🇩🇪</span> Deutsch</div>
+        <div class="lang-option" onclick="setLang('lb')"><span class="lang-flag">🇱🇺</span> Lëtzebuergesch</div>
+      </div>
+    </div>
+    <button class="nav-cta" onclick="openModal('signin-modal')" data-i18n="nav_signin">Sign in</button>
+  </div>
+</nav>
+
+<!-- ═══════════════ HOME ═══════════════ -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div>
+      <div class="hero-label" data-i18n="hero_label">A Luxembourg Government Initiative</div>
+      <h1 data-i18n="hero_title">Props & décor, <em>shared</em><br>not discarded.</h1>
+      <p data-i18n="hero_sub">After the curtain falls, your stage props shouldn't go to waste. Rent, store, and share event equipment across Luxembourg — saving money and reducing waste.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="showPage('browse')" data-i18n="hero_cta1">Browse available props</button>
+        <button class="btn-secondary" onclick="showPage('storage')" data-i18n="hero_cta2">Find storage space</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-map-placeholder">
+        <div class="map-dots">
+          <div class="map-dot" style="top:30%;left:40%"></div>
+          <div class="map-dot" style="top:55%;left:25%"></div>
+          <div class="map-dot storage" style="top:20%;left:65%"></div>
+          <div class="map-dot" style="top:65%;left:60%"></div>
+          <div class="map-dot storage" style="top:45%;left:75%"></div>
+          <div class="map-dot" style="top:75%;left:40%"></div>
+          <div style="position:absolute;bottom:0.75rem;left:0.75rem;display:flex;gap:0.75rem">
+            <div style="display:flex;align-items:center;gap:0.35rem;font-size:0.7rem;color:var(--blue-600)"><div style="width:8px;height:8px;border-radius:50%;background:var(--blue-600)"></div><span data-i18n="map_props">Props</span></div>
+            <div style="display:flex;align-items:center;gap:0.35rem;font-size:0.7rem;color:var(--amber-400)"><div style="width:8px;height:8px;border-radius:50%;background:var(--amber-400)"></div><span data-i18n="map_storage">Storage</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-listing-card">
+        <div class="listing-icon">🎭</div>
+        <div class="listing-info">
+          <strong data-i18n="hero_item1_title">Theatrical backdrop set (3 panels)</strong>
+          <span data-i18n="hero_item1_meta">Available 12 May – 3 Jun · 2.4 km away</span>
+        </div>
+        <div>
+          <div class="listing-price">€18/<span data-i18n="per_day">day</span></div>
+          <div class="availability-badge" data-i18n="available">Available</div>
+        </div>
+      </div>
+      <div class="hero-listing-card">
+        <div class="listing-icon" style="background:var(--amber-50)">🪑</div>
+        <div class="listing-info">
+          <strong data-i18n="hero_item2_title">Banquet chairs × 50</strong>
+          <span data-i18n="hero_item2_meta">Available now · 4.1 km away</span>
+        </div>
+        <div>
+          <div class="listing-price">€35/<span data-i18n="per_day">day</span></div>
+          <div class="availability-badge" data-i18n="available">Available</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat"><span class="stat-num">340+</span><div class="stat-label" data-i18n="stat1">Props & items listed</div></div>
+    <div class="stat"><span class="stat-num">82</span><div class="stat-label" data-i18n="stat2">Storage spaces</div></div>
+    <div class="stat"><span class="stat-num">€24k</span><div class="stat-label" data-i18n="stat3">Saved by organizers</div></div>
+    <div class="stat"><span class="stat-num">6.2t</span><div class="stat-label" data-i18n="stat4">Waste prevented</div></div>
+  </div>
+
+  <div class="features">
+    <div class="section-label" data-i18n="how_it_works">How it works</div>
+    <div class="section-title" data-i18n="features_title">Everything you need, in one place.</div>
+    <div class="features-grid">
+      <div class="feature-card" onclick="showPage('storage')"><div class="feature-icon blue">📍</div><h3 data-i18n="feat1_title">Find nearby storage</h3><p data-i18n="feat1_body">Locate available storage spaces near you or near your next event venue. Short-term and long-term options available.</p></div>
+      <div class="feature-card" onclick="openModal('list-modal')"><div class="feature-icon amber">🎪</div><h3 data-i18n="feat2_title">Rent out your props</h3><p data-i18n="feat2_body">List props and decorations when you don't need them. Set your availability, pricing, and pickup conditions.</p></div>
+      <div class="feature-card" onclick="showPage('schedule')"><div class="feature-icon teal">📅</div><h3 data-i18n="feat3_title">Schedule seamlessly</h3><p data-i18n="feat3_body">A shared calendar shows exactly when props are available, in storage, and when you need them back.</p></div>
+      <div class="feature-card"><div class="feature-icon blue">💶</div><h3 data-i18n="feat4_title">Secure payments</h3><p data-i18n="feat4_body">Integrated payments with deposits held securely. Renters are protected, owners are compensated.</p></div>
+      <div class="feature-card" onclick="showPage('detail')"><div class="feature-icon amber">📦</div><h3 data-i18n="feat5_title">Smart drop-off incentives</h3><p data-i18n="feat5_body">Drop equipment closer to the owner's next event and earn a discount. The network optimizes itself.</p></div>
+      <div class="feature-card" onclick="openModal('signin-modal')"><div class="feature-icon teal">✅</div><h3 data-i18n="feat6_title">Verified users</h3><p data-i18n="feat6_body">All users are identity-verified. Every handoff includes timestamped photos and condition checks.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ BROWSE ═══════════════ -->
+<div class="page" id="page-browse">
+  <div class="browse-layout">
+    <div class="filters-panel">
+      <h3 data-i18n="filter_title">Filter listings</h3>
+      <div class="search-bar">
+        <span style="font-size:0.9rem;color:var(--slate-600)">🔍</span>
+        <input type="text" id="search-input" oninput="filterListings()" data-i18n-placeholder="search_placeholder" placeholder="Search props, décor..." />
+      </div>
+      <div class="filter-group">
+        <label data-i18n="filter_cat">Category</label>
+        <div class="filter-option"><input type="checkbox" checked onchange="filterListings()" data-cat="Theatre" /><span data-i18n="cat_theatre">Theatrical props</span></div>
+        <div class="filter-option"><input type="checkbox" checked onchange="filterListings()" data-cat="Furniture" /><span data-i18n="cat_furniture">Furniture</span></div>
+        <div class="filter-option"><input type="checkbox" checked onchange="filterListings()" data-cat="Lighting" /><span data-i18n="cat_lighting">Lighting & tech</span></div>
+        <div class="filter-option"><input type="checkbox" checked onchange="filterListings()" data-cat="Décor" /><span data-i18n="cat_decor">Fabric & backdrops</span></div>
+        <div class="filter-option"><input type="checkbox" checked onchange="filterListings()" data-cat="Outdoor" /><span data-i18n="cat_outdoor">Outdoor décor</span></div>
+        <div class="filter-option"><input type="checkbox" checked onchange="filterListings()" data-cat="Audio" /><span data-i18n="cat_audio">Audio equipment</span></div>
+      </div>
+      <div class="filter-group">
+        <label data-i18n="filter_avail">Availability</label>
+        <div class="filter-option"><input type="radio" name="avail" checked /><span data-i18n="avail_now">Available now</span></div>
+        <div class="filter-option"><input type="radio" name="avail" /><span data-i18n="avail_range">Pick a date range</span></div>
+        <div class="filter-option"><input type="radio" name="avail" /><span data-i18n="avail_any">Any time</span></div>
+      </div>
+      <div class="filter-group">
+        <label data-i18n="filter_dist">Max distance</label>
+        <div class="filter-option"><input type="radio" name="dist" checked /> 5 km</div>
+        <div class="filter-option"><input type="radio" name="dist" /> 15 km</div>
+        <div class="filter-option"><input type="radio" name="dist" /> 30 km</div>
+        <div class="filter-option"><input type="radio" name="dist" /><span data-i18n="dist_all">All of Luxembourg</span></div>
+      </div>
+      <div class="filter-group">
+        <label data-i18n="filter_price">Price per day</label>
+        <div style="display:flex;gap:0.5rem;align-items:center">
+          <input type="number" id="price-min" placeholder="€0" style="width:70px;padding:0.4rem;border:1px solid var(--slate-100);border-radius:6px;font-size:0.8rem;background:var(--slate-50);outline:none" oninput="filterListings()" />
+          <span style="font-size:0.8rem;color:var(--slate-600)" data-i18n="to">to</span>
+          <input type="number" id="price-max" placeholder="€500" style="width:70px;padding:0.4rem;border:1px solid var(--slate-100);border-radius:6px;font-size:0.8rem;background:var(--slate-50);outline:none" oninput="filterListings()" />
+        </div>
+      </div>
+    </div>
+    <div class="browse-content">
+      <div class="browse-header">
+        <h2 id="results-count">10 props near you</h2>
+        <div class="view-tabs">
+          <div class="view-tab active" onclick="setViewTab(this)" data-i18n="view_grid">Grid</div>
+          <div class="view-tab" onclick="setViewTab(this)" data-i18n="view_map">Map</div>
+          <div class="view-tab" onclick="setViewTab(this)" data-i18n="view_list">List</div>
+        </div>
+      </div>
+      <div class="listings-grid" id="listings-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ DETAIL ═══════════════ -->
+<div class="page" id="page-detail">
+  <div class="detail-layout">
+    <div>
+      <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;cursor:pointer;color:var(--slate-600);font-size:0.875rem" onclick="showPage('browse')">← <span data-i18n="back_listings">Back to listings</span></div>
+      <div class="detail-thumb" id="detail-thumb" style="background:var(--blue-50)">🎭</div>
+      <div class="detail-title" id="detail-title">Theatrical backdrop set (3 panels)</div>
+      <div class="detail-meta">
+        <span>📍 2.4 km — Bonnevoie</span>
+        <span>⭐ 4.9 (12 <span data-i18n="rentals">rentals</span>)</span>
+        <span>✅ <span data-i18n="verified_owner">Verified owner</span></span>
+      </div>
+      <div class="detail-section"><h4 data-i18n="about_item">About this item</h4><p data-i18n="detail_desc">Three professional theatrical backdrop panels, each 3m × 5m. Painted canvas, neutral colour range. Used for 2 productions, in excellent condition. Includes transport packing bags.</p></div>
+      <div class="detail-section"><h4 data-i18n="condition">Condition</h4><p data-i18n="condition_desc">Excellent — last condition check 3 May 2026. Photos available. Minor scuff on panel 2 (documented).</p></div>
+      <div class="detail-section"><h4 data-i18n="owners_next">Owner's next use</h4><p data-i18n="owners_next_desc">The owner needs these back by <strong>10 June 2026</strong> for a production in Esch-sur-Alzette. Returning to Esch-sur-Alzette earns a <span style="color:var(--teal-600);font-weight:500">5% discount</span>.</p></div>
+      <div class="dropoff-calc">
+        <h4 data-i18n="choose_dropoff">Choose drop-off location</h4>
+        <div class="dropoff-option selected" onclick="selectDropoff(this, 0)"><input type="radio" name="dropoff" checked /><span class="dropoff-label" data-i18n="drop1">Owner's storage — Bonnevoie</span><span class="dropoff-badge neutral" data-i18n="no_change">No change</span></div>
+        <div class="dropoff-option" onclick="selectDropoff(this, -5)"><input type="radio" name="dropoff" /><span class="dropoff-label" data-i18n="drop2">Esch-sur-Alzette (owner's next venue)</span><span class="dropoff-badge discount">−5%</span></div>
+        <div class="dropoff-option" onclick="selectDropoff(this, 10)"><input type="radio" name="dropoff" /><span class="dropoff-label" data-i18n="drop3">Kirchberg storage</span><span class="dropoff-badge surcharge">+10%</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="booking-card">
+        <div class="booking-price" id="detail-price">€18 <span>/ <span data-i18n="per_day">day</span></span></div>
+        <div class="form-field"><label data-i18n="pickup_date">Pick-up date</label><input type="date" id="pickup-date" value="2026-05-19" onchange="recalcBooking()" /></div>
+        <div class="form-field"><label data-i18n="return_date">Return date</label><input type="date" id="return-date" value="2026-05-24" onchange="recalcBooking()" /></div>
+        <div id="incentive-banner" class="incentive-banner" style="display:none" data-i18n="incentive_msg">Dropping off in Esch-sur-Alzette saves the owner a trip — you receive a 5% discount.</div>
+        <div class="booking-summary">
+          <div class="summary-row"><span id="sum-days">€18 × 5 days</span><span id="sum-subtotal">€90.00</span></div>
+          <div class="summary-row"><span data-i18n="deposit">Security deposit (refundable)</span><span id="sum-deposit">€45.00</span></div>
+          <div class="summary-row" id="sum-adjust-row" style="display:none"><span id="sum-adjust-label"></span><span id="sum-adjust-val"></span></div>
+          <div class="summary-row"><span data-i18n="platform_fee">Platform fee</span><span>€3.50</span></div>
+          <div class="summary-row total"><span data-i18n="total_due">Total due now</span><span id="sum-total">€93.50</span></div>
+        </div>
+        <button class="btn-primary" style="width:100%;display:flex;justify-content:center;padding:0.85rem" onclick="openModal('confirm-modal')" data-i18n="request_book">Request to book</button>
+        <p style="font-size:0.72rem;color:var(--slate-600);text-align:center;margin-top:0.75rem" data-i18n="deposit_note">Deposit released within 48h of confirmed return in good condition.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ STORAGE ═══════════════ -->
+<div class="page" id="page-storage">
+  <div class="storage-layout">
+    <div class="storage-header">
+      <h2 data-i18n="storage_title">Find nearby storage</h2>
+      <p data-i18n="storage_sub">Short-term and long-term spaces for props and event equipment across Luxembourg.</p>
+    </div>
+    <div class="storage-top">
+      <div class="storage-list" id="storage-list"></div>
+      <div class="map-panel">
+        <div class="map-search-bar">
+          <input type="text" id="map-address-input" data-i18n-placeholder="map_search_placeholder" placeholder="Enter address or postal code..." />
+          <button class="map-search-btn" onclick="searchMapAddress()" data-i18n="map_search_btn">Search nearby</button>
+        </div>
+        <div class="map-canvas" id="map-canvas">
+          <div class="map-result-label" id="map-result-label"></div>
+          <!-- Roads -->
+          <div class="map-road-h major" style="top:35%;left:0;right:0"></div>
+          <div class="map-road-h" style="top:55%;left:0;right:0"></div>
+          <div class="map-road-h" style="top:20%;left:0;right:0"></div>
+          <div class="map-road-h" style="top:75%;left:0;right:0"></div>
+          <div class="map-road-v major" style="left:40%;top:0;bottom:0"></div>
+          <div class="map-road-v" style="left:65%;top:0;bottom:0"></div>
+          <div class="map-road-v" style="left:20%;top:0;bottom:0"></div>
+          <!-- Blocks -->
+          <div class="map-block" style="top:38%;left:42%;width:20%;height:14%"></div>
+          <div class="map-block" style="top:22%;left:42%;width:18%;height:10%"></div>
+          <div class="map-block" style="top:57%;left:22%;width:14%;height:14%"></div>
+          <div class="map-block" style="top:22%;left:67%;width:16%;height:10%"></div>
+          <div class="map-block" style="top:57%;left:67%;width:16%;height:14%"></div>
+          <div class="map-block" style="top:77%;left:42%;width:20%;height:10%"></div>
+          <!-- Pins populated by JS -->
+          <div id="map-pins"></div>
+          <div class="map-legend">
+            <div class="map-legend-item"><div class="map-legend-dot" style="background:var(--blue-600)"></div><span data-i18n="storage_space">Storage space</span></div>
+            <div class="map-legend-item"><div class="map-legend-dot" style="background:var(--amber-400)"></div><span data-i18n="partner_space">Partner space</span></div>
+            <div class="map-legend-item" id="user-pin-legend" style="display:none"><div class="map-legend-dot" style="background:#e24b4a"></div><span data-i18n="your_location">Your location</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="background:var(--teal-50);border-radius:14px;padding:1.25rem;border-left:4px solid var(--teal-600);max-width:600px">
+      <strong style="font-size:0.875rem;color:var(--teal-800)" data-i18n="list_space_title">Have garage or storage space to share?</strong>
+      <p style="font-size:0.8rem;color:var(--teal-600);margin-top:0.35rem" data-i18n="list_space_body">List your space and earn when local organizers need short-term storage. You set the availability and access method.</p>
+      <button style="margin-top:0.75rem;background:var(--teal-600);color:white;border:none;padding:0.5rem 1.25rem;border-radius:100px;font-size:0.8rem;cursor:pointer;font-family:'DM Sans',sans-serif" onclick="openModal('list-storage-modal')" data-i18n="list_my_space">List my space</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SCHEDULE ═══════════════ -->
+<div class="page" id="page-schedule">
+  <div class="schedule-layout">
+    <div style="margin-bottom:2rem">
+      <h2 style="font-family:'Fraunces',serif;font-size:2rem;font-weight:300;margin-bottom:0.35rem" data-i18n="schedule_title">My schedule</h2>
+      <p style="font-size:0.9rem;color:var(--slate-600)" data-i18n="schedule_sub">Track when your props are available, in storage, and needed.</p>
+    </div>
+    <div class="calendar-grid">
+      <div>
+        <div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid var(--slate-100);margin-bottom:1.25rem">
+          <div class="calendar-header">
+            <button class="cal-nav" onclick="changeMonth(-1)">←</button>
+            <span style="font-size:0.9rem;font-weight:500;color:var(--slate-900)" id="cal-month-label">May 2026</span>
+            <button class="cal-nav" onclick="changeMonth(1)">→</button>
+          </div>
+          <div class="cal-grid" id="cal-grid"></div>
+          <div style="display:flex;gap:1.25rem;margin-top:1rem">
+            <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:var(--slate-600)"><div style="width:10px;height:10px;border-radius:2px;background:var(--amber-50);border:1px solid var(--amber-100)"></div><span data-i18n="cal_rented">Rented out</span></div>
+            <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:var(--slate-600)"><div style="width:10px;height:10px;border-radius:2px;background:var(--blue-50);border:1px solid var(--blue-100)"></div><span data-i18n="cal_available">Available</span></div>
+            <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:var(--slate-600)"><div style="width:10px;height:10px;border-radius:50%;background:var(--blue-800)"></div><span data-i18n="today">Today</span></div>
+          </div>
+        </div>
+        <div style="background:white;border-radius:14px;padding:1.25rem;border:1px solid var(--slate-100)">
+          <p style="font-size:0.78rem;font-weight:500;color:var(--slate-600);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem" data-i18n="storage_timeline">Storage timeline</p>
+          <div style="position:relative;padding-left:1rem">
+            <div style="position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--slate-100)"></div>
+            <div style="margin-bottom:1rem;padding-left:0.75rem"><div style="font-size:0.8rem;font-weight:500;color:var(--slate-900)" data-i18n="tl1_title">Backdrop panels — in storage</div><div style="font-size:0.75rem;color:var(--slate-600)" data-i18n="tl1_sub">Bonnevoie garage · until 18 May</div></div>
+            <div style="margin-bottom:1rem;padding-left:0.75rem"><div style="font-size:0.8rem;font-weight:500;color:var(--amber-400)" data-i18n="tl2_title">Backdrop panels — rented to Marie D.</div><div style="font-size:0.75rem;color:var(--slate-600)">18 May – 24 May</div></div>
+            <div style="padding-left:0.75rem"><div style="font-size:0.8rem;font-weight:500;color:var(--blue-600)" data-i18n="tl3_title">Backdrop panels — available / your production</div><div style="font-size:0.75rem;color:var(--slate-600)" data-i18n="tl3_sub">From 25 May · needed by 10 Jun</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="bookings-list">
+        <h3 data-i18n="upcoming">Upcoming activity</h3>
+        <div class="booking-item"><div class="booking-dot amber"></div><div class="booking-item-info"><strong data-i18n="act1_title">Backdrop panels rented to Marie Dupont</strong><span data-i18n="act1_sub">18 May – 24 May · €85.50 earnings · Drop-off: Bonnevoie</span></div></div>
+        <div class="booking-item"><div class="booking-dot"></div><div class="booking-item-info"><strong data-i18n="act2_title">Storage booking expires — Bonnevoie garage</strong><span data-i18n="act2_sub">17 May · Action needed: renew or rearrange</span></div></div>
+        <div class="booking-item"><div class="booking-dot"></div><div class="booking-item-info"><strong data-i18n="act3_title">You need backdrops back — production in Esch</strong><span data-i18n="act3_sub">From 25 May · Confirmed: renter returns 24 May</span></div></div>
+        <div class="booking-item"><div class="booking-dot amber"></div><div class="booking-item-info"><strong data-i18n="act4_title">Banquet chairs rented to Théâtre d'Esch</strong><span data-i18n="act4_sub">1 Jun – 5 Jun · €140 earnings · Pending confirmation</span></div></div>
+        <button class="btn-primary" style="margin-top:1rem;font-size:0.85rem;padding:0.6rem 1.25rem" onclick="openModal('add-booking-modal')" data-i18n="add_window">+ Add availability window</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PROFILE ═══════════════ -->
+<div class="page" id="page-profile">
+  <div class="profile-layout">
+    <div class="profile-header-card">
+      <div class="avatar">JM</div>
+      <div>
+        <div class="profile-name">Jean Müller</div>
+        <div class="profile-sub" data-i18n="member_since">Member since January 2026 · Luxembourg-Ville</div>
+        <div class="verified-badge">✓ <span data-i18n="id_verified">Identity verified · LuxTrust</span></div>
+      </div>
+      <div style="margin-left:auto;text-align:right">
+        <div style="font-size:0.78rem;color:var(--slate-600);margin-bottom:0.35rem" data-i18n="trust_score">Trust score</div>
+        <div style="font-family:'Fraunces',serif;font-size:1.8rem;color:var(--blue-600)">4.9</div>
+        <div style="font-size:0.72rem;color:var(--slate-600)">12 <span data-i18n="transactions">transactions</span></div>
+      </div>
+    </div>
+    <div class="profile-stats">
+      <div class="profile-stat-card"><div class="profile-stat-num">€342</div><div class="profile-stat-label" data-i18n="earned">Earned from rentals</div></div>
+      <div class="profile-stat-card"><div class="profile-stat-num">€89</div><div class="profile-stat-label" data-i18n="saved">Saved on storage</div></div>
+      <div class="profile-stat-card"><div class="profile-stat-num">1.2t</div><div class="profile-stat-label" data-i18n="waste_prevented">Waste prevented</div></div>
+    </div>
+    <div class="my-listings-section">
+      <h3 data-i18n="my_listings">My listings</h3>
+      <div class="my-listing-row"><div class="my-listing-icon">🎭</div><div class="my-listing-info"><strong data-i18n="ml1_title">Theatrical backdrop set (3 panels)</strong><span data-i18n="ml1_meta">€18/day · 12 rentals · Next: rented 18–24 May</span></div><span class="status-pill rented" data-i18n="rented">Rented</span><button class="edit-btn" onclick="showToast(t('edit_opened'))" data-i18n="edit">Edit</button></div>
+      <div class="my-listing-row"><div class="my-listing-icon">🪑</div><div class="my-listing-info"><strong data-i18n="ml2_title">Banquet chairs × 50</strong><span data-i18n="ml2_meta">€35/day · 4 rentals · Available now</span></div><span class="status-pill active" data-i18n="available">Available</span><button class="edit-btn" onclick="showToast(t('edit_opened'))" data-i18n="edit">Edit</button></div>
+      <div class="my-listing-row"><div class="my-listing-icon" style="background:var(--amber-50)">🕯️</div><div class="my-listing-info"><strong data-i18n="ml3_title">Candelabra set × 8</strong><span data-i18n="ml3_meta">€12/day · 2 rentals · Available now</span></div><span class="status-pill active" data-i18n="available">Available</span><button class="edit-btn" onclick="showToast(t('edit_opened'))" data-i18n="edit">Edit</button></div>
+      <div class="my-listing-row"><div class="my-listing-icon" style="background:var(--teal-50)">🔊</div><div class="my-listing-info"><strong data-i18n="ml4_title">PA speaker system (pair)</strong><span data-i18n="ml4_meta">€55/day · 3 rentals · Available now</span></div><span class="status-pill active" data-i18n="available">Available</span><button class="edit-btn" onclick="showToast(t('edit_opened'))" data-i18n="edit">Edit</button></div>
+      <button class="btn-primary" style="margin-top:0.75rem" onclick="openModal('list-modal')" data-i18n="add_listing">+ Add a new listing</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODALS ═══════════════ -->
+<div class="modal-overlay" id="signin-modal" onclick="overlayClose(event,'signin-modal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('signin-modal')">✕</button>
+    <div class="auth-tabs">
+      <div class="auth-tab active" onclick="setAuthTab(this,'signin-form')" data-i18n="sign_in">Sign in</div>
+      <div class="auth-tab" onclick="setAuthTab(this,'register-form')" data-i18n="register">Register</div>
+    </div>
+    <div id="signin-form">
+      <div class="form-field"><label data-i18n="email">Email</label><input type="email" placeholder="you@example.com" /></div>
+      <div class="form-field"><label data-i18n="password">Password</label><input type="password" placeholder="••••••••" /></div>
+      <div class="modal-actions"><button class="btn-primary" style="flex:1" onclick="closeModal('signin-modal');showToast(t('welcome_back'))" data-i18n="sign_in">Sign in</button></div>
+      <p style="font-size:0.78rem;color:var(--slate-600);margin-top:1rem;text-align:center" data-i18n="or_luxtrust">Or sign in with <span style="color:var(--blue-600);cursor:pointer;font-weight:500">LuxTrust</span></p>
+    </div>
+    <div id="register-form" style="display:none">
+      <div class="form-field"><label data-i18n="full_name">Full name</label><input type="text" placeholder="Jean Müller" /></div>
+      <div class="form-field"><label data-i18n="email">Email</label><input type="email" placeholder="you@example.com" /></div>
+      <div class="form-field"><label data-i18n="password">Password</label><input type="password" placeholder="••••••••" /></div>
+      <div class="modal-actions"><button class="btn-primary" style="flex:1" onclick="closeModal('signin-modal');showToast(t('account_created'))" data-i18n="create_account">Create account</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="list-modal" onclick="overlayClose(event,'list-modal')">
+  <div class="modal" style="max-width:560px">
+    <button class="modal-close" onclick="closeModal('list-modal')">✕</button>
+    <h2 data-i18n="list_prop_title">List a prop or decoration</h2>
+    <p data-i18n="list_prop_sub">Fill in the details below. You can edit or remove your listing at any time.</p>
+    <div class="list-form">
+      <div class="form-field full-width"><label data-i18n="item_name">Item name</label><input type="text" data-i18n-placeholder="item_name_placeholder" placeholder="e.g. Theatrical backdrop set" /></div>
+      <div class="form-field"><label data-i18n="filter_cat">Category</label><select><option data-i18n="cat_theatre">Theatrical props</option><option data-i18n="cat_furniture">Furniture</option><option data-i18n="cat_lighting">Lighting & tech</option><option data-i18n="cat_decor">Fabric & backdrops</option><option data-i18n="cat_outdoor">Outdoor décor</option></select></div>
+      <div class="form-field"><label data-i18n="price_day">Price per day (€)</label><input type="number" placeholder="18" /></div>
+      <div class="form-field"><label data-i18n="avail_from">Available from</label><input type="date" /></div>
+      <div class="form-field"><label data-i18n="avail_until">Available until</label><input type="date" /></div>
+      <div class="form-field full-width"><label data-i18n="description">Description</label><textarea style="resize:vertical;min-height:70px" data-i18n-placeholder="desc_placeholder" placeholder="Condition, dimensions, pickup instructions..."></textarea></div>
+      <div class="form-field full-width"><label data-i18n="pickup_location">Pickup / storage location</label><input type="text" placeholder="e.g. Bonnevoie, Luxembourg" /></div>
+      <div class="form-field full-width"><label data-i18n="next_event_location">Owner's next event location</label><input type="text" placeholder="e.g. Esch-sur-Alzette" /></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('list-modal')" data-i18n="cancel">Cancel</button>
+      <button class="btn-primary" onclick="closeModal('list-modal');showToast(t('listing_submitted'))" data-i18n="publish">Publish listing</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="storage-modal" onclick="overlayClose(event,'storage-modal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('storage-modal')">✕</button>
+    <h2 data-i18n="book_storage_title">Book this storage space</h2>
+    <p id="storage-modal-desc">Private garage — Bonnevoie · €8/day · 24 m²</p>
+    <div class="form-field"><label data-i18n="from_date">From date</label><input type="date" /></div>
+    <div class="form-field"><label data-i18n="to_date">To date</label><input type="date" /></div>
+    <div class="form-field"><label data-i18n="pickup_window">Preferred pickup window</label>
+      <div class="storage-slots">
+        <div class="time-slot" onclick="selectSlot(this)">9:00–10:00</div>
+        <div class="time-slot" onclick="selectSlot(this)">10:00–11:00</div>
+        <div class="time-slot unavailable">11:00–12:00</div>
+        <div class="time-slot" onclick="selectSlot(this)">14:00–15:00</div>
+        <div class="time-slot" onclick="selectSlot(this)">15:00–16:00</div>
+        <div class="time-slot" onclick="selectSlot(this)">16:00–17:00</div>
+      </div>
+    </div>
+    <div class="form-field"><label data-i18n="storing_what">What are you storing?</label><input type="text" data-i18n-placeholder="storing_placeholder" placeholder="e.g. Backdrop panels + 4 costume racks" /></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('storage-modal')" data-i18n="cancel">Cancel</button>
+      <button class="btn-primary" onclick="closeModal('storage-modal');showToast(t('storage_confirmed'))" data-i18n="confirm_booking">Confirm booking</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="list-storage-modal" onclick="overlayClose(event,'list-storage-modal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('list-storage-modal')">✕</button>
+    <h2 data-i18n="list_space_title">List your storage space</h2>
+    <p data-i18n="list_space_modal_sub">Share your garage, basement, or commercial unit with event organizers in your area.</p>
+    <div class="form-field"><label data-i18n="space_type">Type of space</label><select><option data-i18n="type_garage">Private garage</option><option data-i18n="type_basement">Basement</option><option data-i18n="type_commercial">Commercial storage unit</option><option data-i18n="type_warehouse">Warehouse</option><option data-i18n="type_other">Other</option></select></div>
+    <div class="form-field"><label data-i18n="address">Address</label><input type="text" data-i18n-placeholder="address_placeholder" placeholder="Street, postcode, city" /></div>
+    <div class="form-field"><label data-i18n="size_m2">Approximate size (m²)</label><input type="number" placeholder="24" /></div>
+    <div class="form-field"><label data-i18n="price_day">Price per day (€)</label><input type="number" placeholder="8" /></div>
+    <div class="form-field"><label data-i18n="access_method">Access method</label><select><option data-i18n="access1">Owner present for handover</option><option data-i18n="access2">Coded lock — access shared on booking</option><option data-i18n="access3">Smart lock (app-based)</option><option data-i18n="access4">Key drop arranged separately</option></select></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('list-storage-modal')" data-i18n="cancel">Cancel</button>
+      <button class="btn-primary" onclick="closeModal('list-storage-modal');showToast(t('space_listed'))" data-i18n="list_my_space">List my space</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="confirm-modal" onclick="overlayClose(event,'confirm-modal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('confirm-modal')">✕</button>
+    <h2 data-i18n="confirm_booking_title">Confirm your booking</h2>
+    <p data-i18n="confirm_desc">You're about to request the <strong>Theatrical backdrop set</strong> from Jean M.</p>
+    <div class="booking-summary" style="margin:1rem 0">
+      <div class="summary-row"><span data-i18n="rental_5">Rental (5 days)</span><span>€90.00</span></div>
+      <div class="summary-row"><span data-i18n="deposit">Security deposit</span><span>€45.00</span></div>
+      <div class="summary-row"><span data-i18n="platform_fee">Platform fee</span><span>€3.50</span></div>
+      <div class="summary-row total"><span data-i18n="total_charged">Total charged today</span><span>€138.50</span></div>
+    </div>
+    <div class="form-field"><label data-i18n="payment_method">Payment method</label><select><option>•••• •••• •••• 4242 (Visa)</option><option data-i18n="add_card">Add new card</option></select></div>
+    <p style="font-size:0.75rem;color:var(--slate-600);margin-bottom:1rem" data-i18n="confirm_terms">By confirming you agree to the rental terms and cancellation policy. The owner has 24 hours to accept.</p>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('confirm-modal')" data-i18n="go_back">Go back</button>
+      <button class="btn-primary" onclick="closeModal('confirm-modal');showPage('schedule');showToast(t('booking_sent'))" data-i18n="confirm_pay">Confirm & pay</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="add-booking-modal" onclick="overlayClose(event,'add-booking-modal')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('add-booking-modal')">✕</button>
+    <h2 data-i18n="add_window_title">Add availability window</h2>
+    <p data-i18n="add_window_sub">Let renters know when one of your items is available for rental.</p>
+    <div class="form-field"><label data-i18n="item_label">Item</label><select><option data-i18n="ml1_title">Theatrical backdrop set</option><option data-i18n="ml2_title">Banquet chairs × 50</option><option data-i18n="ml3_title">Candelabra set × 8</option></select></div>
+    <div class="form-field"><label data-i18n="avail_from">Available from</label><input type="date" /></div>
+    <div class="form-field"><label data-i18n="avail_until">Available until</label><input type="date" /></div>
+    <div class="form-field"><label data-i18n="notes">Notes for renters</label><input type="text" data-i18n-placeholder="notes_placeholder" placeholder="e.g. Must be returned to Bonnevoie storage" /></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('add-booking-modal')" data-i18n="cancel">Cancel</button>
+      <button class="btn-primary" onclick="closeModal('add-booking-modal');showToast(t('window_added'))" data-i18n="save">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+// TRANSLATIONS
+// ══════════════════════════════════════════
+const langs = {
+  en: {
+    flag: '🇬🇧', label: 'English',
+    nav_browse:'Browse props', nav_storage:'Find storage', nav_schedule:'My schedule', nav_profile:'My profile', nav_signin:'Sign in',
+    hero_label:'A Luxembourg Government Initiative',
+    hero_title:'Props & décor, <em>shared</em><br>not discarded.',
+    hero_sub:'After the curtain falls, your stage props shouldn\'t go to waste. Rent, store, and share event equipment across Luxembourg — saving money and reducing waste.',
+    hero_cta1:'Browse available props', hero_cta2:'Find storage space',
+    hero_item1_title:'Theatrical backdrop set (3 panels)', hero_item1_meta:'Available 12 May – 3 Jun · 2.4 km away',
+    hero_item2_title:'Banquet chairs × 50', hero_item2_meta:'Available now · 4.1 km away',
+    map_props:'Props', map_storage:'Storage', available:'Available', per_day:'day',
+    stat1:'Props & items listed', stat2:'Storage spaces', stat3:'Saved by organizers', stat4:'Waste prevented',
+    how_it_works:'How it works', features_title:'Everything you need, in one place.',
+    feat1_title:'Find nearby storage', feat1_body:'Locate available storage spaces near you or near your next event venue. Short-term and long-term options available.',
+    feat2_title:'Rent out your props', feat2_body:'List props and decorations when you don\'t need them. Set your availability, pricing, and pickup conditions.',
+    feat3_title:'Schedule seamlessly', feat3_body:'A shared calendar shows exactly when props are available, in storage, and when you need them back.',
+    feat4_title:'Secure payments', feat4_body:'Integrated payments with deposits held securely. Renters are protected, owners are compensated.',
+    feat5_title:'Smart drop-off incentives', feat5_body:'Drop equipment closer to the owner\'s next event and earn a discount. The network optimizes itself.',
+    feat6_title:'Verified users', feat6_body:'All users are identity-verified. Every handoff includes timestamped photos and condition checks.',
+    filter_title:'Filter listings', search_placeholder:'Search props, décor...', filter_cat:'Category',
+    cat_theatre:'Theatrical props', cat_furniture:'Furniture', cat_lighting:'Lighting & tech', cat_decor:'Fabric & backdrops', cat_outdoor:'Outdoor décor', cat_audio:'Audio equipment',
+    filter_avail:'Availability', avail_now:'Available now', avail_range:'Pick a date range', avail_any:'Any time',
+    filter_dist:'Max distance', dist_all:'All of Luxembourg',
+    filter_price:'Price per day', to:'to',
+    view_grid:'Grid', view_map:'Map', view_list:'List',
+    back_listings:'Back to listings', rentals:'rentals', verified_owner:'Verified owner',
+    about_item:'About this item', condition:'Condition', owners_next:'Owner\'s next use',
+    detail_desc:'Three professional theatrical backdrop panels, each 3m × 5m. Painted canvas, neutral colour range. In excellent condition. Includes transport packing bags.',
+    condition_desc:'Excellent — last condition check 3 May 2026. Photos available. Minor scuff on panel 2 (documented).',
+    owners_next_desc:'The owner needs these back by <strong>10 June 2026</strong> for a production in Esch-sur-Alzette. Returning to Esch-sur-Alzette earns a <span style="color:var(--teal-600);font-weight:500">5% discount</span>.',
+    choose_dropoff:'Choose drop-off location', drop1:'Owner\'s storage — Bonnevoie', drop2:'Esch-sur-Alzette (owner\'s next venue)', drop3:'Kirchberg storage', no_change:'No change',
+    pickup_date:'Pick-up date', return_date:'Return date',
+    incentive_msg:'Dropping off in Esch-sur-Alzette saves the owner a trip — you receive a 5% discount.',
+    deposit:'Security deposit (refundable)', platform_fee:'Platform fee', total_due:'Total due now',
+    request_book:'Request to book', deposit_note:'Deposit released within 48h of confirmed return in good condition.',
+    storage_title:'Find nearby storage', storage_sub:'Short-term and long-term spaces for props and event equipment across Luxembourg.',
+    map_search_placeholder:'Enter address or postal code...', map_search_btn:'Search nearby',
+    storage_space:'Storage space', partner_space:'Partner space', your_location:'Your location',
+    list_space_title:'Have garage or storage space to share?', list_space_body:'List your space and earn when local organizers need short-term storage. You set the availability and access method.',
+    list_my_space:'List my space',
+    schedule_title:'My schedule', schedule_sub:'Track when your props are available, in storage, and needed.',
+    cal_rented:'Rented out', cal_available:'Available', today:'Today', storage_timeline:'Storage timeline',
+    tl1_title:'Backdrop panels — in storage', tl1_sub:'Bonnevoie garage · until 18 May',
+    tl2_title:'Backdrop panels — rented to Marie D.',
+    tl3_title:'Backdrop panels — available / your production', tl3_sub:'From 25 May · needed by 10 Jun',
+    upcoming:'Upcoming activity',
+    act1_title:'Backdrop panels rented to Marie Dupont', act1_sub:'18 May – 24 May · €85.50 earnings · Drop-off: Bonnevoie',
+    act2_title:'Storage booking expires — Bonnevoie garage', act2_sub:'17 May · Action needed: renew or rearrange',
+    act3_title:'You need backdrops back — production in Esch', act3_sub:'From 25 May · Confirmed: renter returns 24 May',
+    act4_title:'Banquet chairs rented to Théâtre d\'Esch', act4_sub:'1 Jun – 5 Jun · €140 earnings · Pending confirmation',
+    add_window:'+ Add availability window',
+    member_since:'Member since January 2026 · Luxembourg-Ville', id_verified:'Identity verified · LuxTrust',
+    trust_score:'Trust score', transactions:'transactions',
+    earned:'Earned from rentals', saved:'Saved on storage', waste_prevented:'Waste prevented',
+    my_listings:'My listings',
+    ml1_title:'Theatrical backdrop set (3 panels)', ml1_meta:'€18/day · 12 rentals · Next: rented 18–24 May',
+    ml2_title:'Banquet chairs × 50', ml2_meta:'€35/day · 4 rentals · Available now',
+    ml3_title:'Candelabra set × 8', ml3_meta:'€12/day · 2 rentals · Available now',
+    ml4_title:'PA speaker system (pair)', ml4_meta:'€55/day · 3 rentals · Available now',
+    rented:'Rented', edit:'Edit', add_listing:'+ Add a new listing',
+    sign_in:'Sign in', register:'Register', email:'Email', password:'Password',
+    or_luxtrust:'Or sign in with <span style="color:var(--blue-600);cursor:pointer;font-weight:500">LuxTrust</span>',
+    full_name:'Full name', create_account:'Create account',
+    list_prop_title:'List a prop or decoration', list_prop_sub:'Fill in the details below. You can edit or remove your listing at any time.',
+    item_name:'Item name', item_name_placeholder:'e.g. Theatrical backdrop set', price_day:'Price per day (€)',
+    avail_from:'Available from', avail_until:'Available until', description:'Description',
+    desc_placeholder:'Condition, dimensions, pickup instructions...', pickup_location:'Pickup / storage location',
+    next_event_location:'Owner\'s next event location', cancel:'Cancel', publish:'Publish listing',
+    book_storage_title:'Book this storage space', from_date:'From date', to_date:'To date',
+    pickup_window:'Preferred pickup window', storing_what:'What are you storing?', storing_placeholder:'e.g. Backdrop panels + 4 costume racks',
+    confirm_booking:'Confirm booking', list_space_modal_sub:'Share your garage, basement, or commercial unit with event organizers in your area.',
+    space_type:'Type of space', type_garage:'Private garage', type_basement:'Basement', type_commercial:'Commercial storage unit', type_warehouse:'Warehouse', type_other:'Other',
+    address:'Address', address_placeholder:'Street, postcode, city', size_m2:'Approximate size (m²)', access_method:'Access method',
+    access1:'Owner present for handover', access2:'Coded lock — access shared on booking', access3:'Smart lock (app-based)', access4:'Key drop arranged separately',
+    confirm_booking_title:'Confirm your booking', confirm_desc:'You\'re about to request the <strong>Theatrical backdrop set</strong> from Jean M.',
+    rental_5:'Rental (5 days)', total_charged:'Total charged today', payment_method:'Payment method', add_card:'Add new card',
+    confirm_terms:'By confirming you agree to the rental terms and cancellation policy. The owner has 24 hours to accept.',
+    go_back:'Go back', confirm_pay:'Confirm & pay',
+    add_window_title:'Add availability window', add_window_sub:'Let renters know when one of your items is available for rental.',
+    item_label:'Item', notes:'Notes for renters', notes_placeholder:'e.g. Must be returned to Bonnevoie storage', save:'Save',
+    welcome_back:'Welcome back, Jean!', account_created:'Account created! Welcome to ressourcerie.lu',
+    listing_submitted:'Listing submitted for review!', storage_confirmed:'Storage booking confirmed!',
+    space_listed:'Space listed successfully!', booking_sent:'Booking request sent! You\'ll be notified when accepted.',
+    window_added:'Availability window added!', edit_opened:'Edit listing opened',
+    nearby_shown:'Showing spaces nearest to your location', results_count_label:' props near you',
+    drop_discount_label:'Drop-off discount', drop_surcharge_label:'Drop-off surcharge',
+  },
+  fr: {
+    flag: '🇫🇷', label: 'Français',
+    nav_browse:'Parcourir', nav_storage:'Trouver un stockage', nav_schedule:'Mon planning', nav_profile:'Mon profil', nav_signin:'Se connecter',
+    hero_label:'Une initiative du gouvernement luxembourgeois',
+    hero_title:'Accessoires & décors, <em>partagés</em><br>pas jetés.',
+    hero_sub:'Après le spectacle, vos accessoires ne devraient pas finir à la poubelle. Louez, stockez et partagez du matériel événementiel à travers le Luxembourg.',
+    hero_cta1:'Parcourir les accessoires', hero_cta2:'Trouver un espace de stockage',
+    hero_item1_title:'Toile de fond théâtrale (3 panneaux)', hero_item1_meta:'Disponible 12 mai – 3 juin · 2,4 km',
+    hero_item2_title:'Chaises de banquet × 50', hero_item2_meta:'Disponible maintenant · 4,1 km',
+    map_props:'Accessoires', map_storage:'Stockage', available:'Disponible', per_day:'jour',
+    stat1:'Accessoires listés', stat2:'Espaces de stockage', stat3:'Économisé par les organisateurs', stat4:'Déchets évités',
+    how_it_works:'Comment ça marche', features_title:'Tout ce dont vous avez besoin, en un seul endroit.',
+    feat1_title:'Trouver un stockage proche', feat1_body:'Localisez des espaces de stockage disponibles près de chez vous ou de votre prochain lieu d\'événement.',
+    feat2_title:'Louer vos accessoires', feat2_body:'Listez vos accessoires et décorations quand vous n\'en avez pas besoin. Fixez votre disponibilité et vos tarifs.',
+    feat3_title:'Planifier facilement', feat3_body:'Un calendrier partagé montre exactement quand les accessoires sont disponibles, en stockage ou nécessaires.',
+    feat4_title:'Paiements sécurisés', feat4_body:'Paiements intégrés avec dépôts de garantie sécurisés. Les locataires sont protégés, les propriétaires compensés.',
+    feat5_title:'Incitations au dépôt intelligent', feat5_body:'Déposez le matériel plus près du prochain événement du propriétaire et bénéficiez d\'une réduction.',
+    feat6_title:'Utilisateurs vérifiés', feat6_body:'Tous les utilisateurs sont vérifiés. Chaque échange inclut des photos horodatées et des vérifications de l\'état.',
+    filter_title:'Filtrer les annonces', search_placeholder:'Rechercher des accessoires, décors...', filter_cat:'Catégorie',
+    cat_theatre:'Accessoires théâtraux', cat_furniture:'Mobilier', cat_lighting:'Éclairage & tech', cat_decor:'Tissus & toiles', cat_outdoor:'Décor extérieur', cat_audio:'Équipement audio',
+    filter_avail:'Disponibilité', avail_now:'Disponible maintenant', avail_range:'Choisir une période', avail_any:'N\'importe quand',
+    filter_dist:'Distance maximale', dist_all:'Tout le Luxembourg',
+    filter_price:'Prix par jour', to:'à',
+    view_grid:'Grille', view_map:'Carte', view_list:'Liste',
+    back_listings:'Retour aux annonces', rentals:'locations', verified_owner:'Propriétaire vérifié',
+    about_item:'À propos de cet article', condition:'État', owners_next:'Prochain usage du propriétaire',
+    detail_desc:'Trois toiles de fond théâtrales professionnelles, chacune 3m × 5m. Toile peinte, palette neutre. En excellent état. Sacs de transport inclus.',
+    condition_desc:'Excellent — dernier contrôle le 3 mai 2026. Photos disponibles. Légère égratignure sur le panneau 2 (documentée).',
+    owners_next_desc:'Le propriétaire a besoin de ces accessoires avant le <strong>10 juin 2026</strong> pour une production à Esch-sur-Alzette. Retourner à Esch-sur-Alzette permet d\'obtenir une <span style="color:var(--teal-600);font-weight:500">réduction de 5%</span>.',
+    choose_dropoff:'Choisir le lieu de dépôt', drop1:'Stockage du propriétaire — Bonnevoie', drop2:'Esch-sur-Alzette (prochain lieu du propriétaire)', drop3:'Stockage Kirchberg', no_change:'Sans changement',
+    pickup_date:'Date de prise en charge', return_date:'Date de retour',
+    incentive_msg:'Déposer à Esch-sur-Alzette évite un déplacement au propriétaire — vous recevez une réduction de 5%.',
+    deposit:'Dépôt de garantie (remboursable)', platform_fee:'Frais de plateforme', total_due:'Total dû maintenant',
+    request_book:'Demander la réservation', deposit_note:'Dépôt restitué sous 48h après confirmation du retour en bon état.',
+    storage_title:'Trouver un stockage proche', storage_sub:'Espaces à court et long terme pour accessoires et matériel événementiel au Luxembourg.',
+    map_search_placeholder:'Entrez une adresse ou un code postal...', map_search_btn:'Rechercher à proximité',
+    storage_space:'Espace de stockage', partner_space:'Espace partenaire', your_location:'Votre position',
+    list_space_title:'Vous avez un garage ou un espace à partager?', list_space_body:'Listez votre espace et gagnez quand des organisateurs locaux ont besoin de stockage.',
+    list_my_space:'Lister mon espace',
+    schedule_title:'Mon planning', schedule_sub:'Suivez quand vos accessoires sont disponibles, en stockage ou nécessaires.',
+    cal_rented:'Loué', cal_available:'Disponible', today:'Aujourd\'hui', storage_timeline:'Chronologie du stockage',
+    tl1_title:'Panneaux — en stockage', tl1_sub:'Garage Bonnevoie · jusqu\'au 18 mai',
+    tl2_title:'Panneaux — loués à Marie D.',
+    tl3_title:'Panneaux — disponibles / votre production', tl3_sub:'À partir du 25 mai · nécessaires avant le 10 juin',
+    upcoming:'Activité à venir',
+    act1_title:'Panneaux loués à Marie Dupont', act1_sub:'18 mai – 24 mai · €85,50 de revenus · Dépôt: Bonnevoie',
+    act2_title:'Réservation de stockage expirée — garage Bonnevoie', act2_sub:'17 mai · Action requise: renouveler ou réorganiser',
+    act3_title:'Vous avez besoin des panneaux — production à Esch', act3_sub:'À partir du 25 mai · Confirmé: locataire retourne le 24 mai',
+    act4_title:'Chaises de banquet louées au Théâtre d\'Esch', act4_sub:'1–5 juin · €140 de revenus · En attente de confirmation',
+    add_window:'+ Ajouter une fenêtre de disponibilité',
+    member_since:'Membre depuis janvier 2026 · Luxembourg-Ville', id_verified:'Identité vérifiée · LuxTrust',
+    trust_score:'Score de confiance', transactions:'transactions',
+    earned:'Gagné sur les locations', saved:'Économisé sur le stockage', waste_prevented:'Déchets évités',
+    my_listings:'Mes annonces',
+    ml1_title:'Toile de fond théâtrale (3 panneaux)', ml1_meta:'€18/jour · 12 locations · Prochain: loué 18–24 mai',
+    ml2_title:'Chaises de banquet × 50', ml2_meta:'€35/jour · 4 locations · Disponible maintenant',
+    ml3_title:'Candélabres × 8', ml3_meta:'€12/jour · 2 locations · Disponible maintenant',
+    ml4_title:'Système de sonorisation (paire)', ml4_meta:'€55/jour · 3 locations · Disponible maintenant',
+    rented:'Loué', edit:'Modifier', add_listing:'+ Ajouter une annonce',
+    sign_in:'Se connecter', register:'S\'inscrire', email:'E-mail', password:'Mot de passe',
+    or_luxtrust:'Ou se connecter avec <span style="color:var(--blue-600);cursor:pointer;font-weight:500">LuxTrust</span>',
+    full_name:'Nom complet', create_account:'Créer un compte',
+    list_prop_title:'Lister un accessoire ou une décoration', list_prop_sub:'Remplissez les détails ci-dessous. Vous pouvez modifier ou supprimer votre annonce à tout moment.',
+    item_name:'Nom de l\'article', item_name_placeholder:'ex. Toile de fond théâtrale', price_day:'Prix par jour (€)',
+    avail_from:'Disponible à partir de', avail_until:'Disponible jusqu\'au', description:'Description',
+    desc_placeholder:'État, dimensions, instructions de collecte...', pickup_location:'Lieu de collecte / stockage',
+    next_event_location:'Prochain lieu d\'événement du propriétaire', cancel:'Annuler', publish:'Publier l\'annonce',
+    book_storage_title:'Réserver cet espace de stockage', from_date:'Date de début', to_date:'Date de fin',
+    pickup_window:'Fenêtre de collecte préférée', storing_what:'Que stockez-vous?', storing_placeholder:'ex. Panneaux + 4 portants costumes',
+    confirm_booking:'Confirmer la réservation', list_space_modal_sub:'Partagez votre garage, sous-sol ou unité commerciale avec les organisateurs locaux.',
+    space_type:'Type d\'espace', type_garage:'Garage privé', type_basement:'Sous-sol', type_commercial:'Unité de stockage commerciale', type_warehouse:'Entrepôt', type_other:'Autre',
+    address:'Adresse', address_placeholder:'Rue, code postal, ville', size_m2:'Surface approximative (m²)', access_method:'Méthode d\'accès',
+    access1:'Propriétaire présent pour la remise', access2:'Serrure à code — accès partagé à la réservation', access3:'Serrure connectée (application)', access4:'Remise de clé organisée séparément',
+    confirm_booking_title:'Confirmer votre réservation', confirm_desc:'Vous êtes sur le point de demander le <strong>Lot de toiles de fond</strong> à Jean M.',
+    rental_5:'Location (5 jours)', total_charged:'Total débité aujourd\'hui', payment_method:'Moyen de paiement', add_card:'Ajouter une carte',
+    confirm_terms:'En confirmant, vous acceptez les conditions de location et la politique d\'annulation. Le propriétaire a 24 heures pour accepter.',
+    go_back:'Retour', confirm_pay:'Confirmer & payer',
+    add_window_title:'Ajouter une fenêtre de disponibilité', add_window_sub:'Informez les locataires de la disponibilité de vos articles.',
+    item_label:'Article', notes:'Notes pour les locataires', notes_placeholder:'ex. Doit être retourné au stockage de Bonnevoie', save:'Enregistrer',
+    welcome_back:'Bienvenue, Jean!', account_created:'Compte créé! Bienvenue sur ressourcerie.lu',
+    listing_submitted:'Annonce soumise pour examen!', storage_confirmed:'Réservation de stockage confirmée!',
+    space_listed:'Espace listé avec succès!', booking_sent:'Demande de réservation envoyée!',
+    window_added:'Fenêtre de disponibilité ajoutée!', edit_opened:'Modification de l\'annonce ouverte',
+    nearby_shown:'Affichage des espaces les plus proches de votre position', results_count_label:' accessoires près de vous',
+    drop_discount_label:'Réduction dépôt', drop_surcharge_label:'Supplément dépôt',
+  },
+  de: {
+    flag: '🇩🇪', label: 'Deutsch',
+    nav_browse:'Requisiten durchsuchen', nav_storage:'Lager finden', nav_schedule:'Mein Kalender', nav_profile:'Mein Profil', nav_signin:'Anmelden',
+    hero_label:'Eine Initiative der luxemburgischen Regierung',
+    hero_title:'Requisiten & Deko, <em>geteilt</em><br>nicht weggeworfen.',
+    hero_sub:'Nach dem Vorhang sollten Ihre Bühnenrequisiten nicht im Müll landen. Vermieten, lagern und teilen Sie Veranstaltungsmaterial in ganz Luxemburg.',
+    hero_cta1:'Verfügbare Requisiten durchsuchen', hero_cta2:'Lagerplatz finden',
+    hero_item1_title:'Bühnenhintergrund (3 Paneele)', hero_item1_meta:'Verfügbar 12. Mai – 3. Jun · 2,4 km entfernt',
+    hero_item2_title:'Bankettstühle × 50', hero_item2_meta:'Jetzt verfügbar · 4,1 km entfernt',
+    map_props:'Requisiten', map_storage:'Lager', available:'Verfügbar', per_day:'Tag',
+    stat1:'Requisiten & Artikel', stat2:'Lagerplätze', stat3:'Von Organisatoren gespart', stat4:'Abfall vermieden',
+    how_it_works:'So funktioniert es', features_title:'Alles, was Sie brauchen, an einem Ort.',
+    feat1_title:'Nahgelegene Lager finden', feat1_body:'Verfügbare Lagerplätze in Ihrer Nähe oder nahe Ihrer nächsten Veranstaltung finden.',
+    feat2_title:'Requisiten vermieten', feat2_body:'Listen Sie Requisiten auf, wenn Sie sie nicht benötigen. Legen Sie Verfügbarkeit und Preise fest.',
+    feat3_title:'Nahtlos planen', feat3_body:'Ein gemeinsamer Kalender zeigt genau, wann Requisiten verfügbar, im Lager oder benötigt werden.',
+    feat4_title:'Sichere Zahlungen', feat4_body:'Integrierte Zahlungen mit sicheren Kautionen. Mieter sind geschützt, Eigentümer werden entschädigt.',
+    feat5_title:'Kluge Rückgabeanreize', feat5_body:'Geben Sie Material näher am nächsten Veranstaltungsort des Eigentümers zurück und erhalten Sie Rabatt.',
+    feat6_title:'Verifizierte Nutzer', feat6_body:'Alle Nutzer sind identitätsverifiziert. Jede Übergabe umfasst Fotos mit Zeitstempel.',
+    filter_title:'Anzeigen filtern', search_placeholder:'Requisiten, Dekoration suchen...', filter_cat:'Kategorie',
+    cat_theatre:'Theaterrequisiten', cat_furniture:'Möbel', cat_lighting:'Beleuchtung & Technik', cat_decor:'Stoffe & Hintergründe', cat_outdoor:'Außendekoration', cat_audio:'Audioausrüstung',
+    filter_avail:'Verfügbarkeit', avail_now:'Jetzt verfügbar', avail_range:'Zeitraum wählen', avail_any:'Jederzeit',
+    filter_dist:'Maximale Entfernung', dist_all:'Ganz Luxemburg',
+    filter_price:'Preis pro Tag', to:'bis',
+    view_grid:'Raster', view_map:'Karte', view_list:'Liste',
+    back_listings:'Zurück zu den Anzeigen', rentals:'Vermietungen', verified_owner:'Verifizierter Eigentümer',
+    about_item:'Über diesen Artikel', condition:'Zustand', owners_next:'Nächste Nutzung des Eigentümers',
+    detail_desc:'Drei professionelle Bühnenhintergrundpaneele, je 3m × 5m. Bemalte Leinwand, neutrale Farbpalette. In ausgezeichnetem Zustand. Transporttaschen inklusive.',
+    condition_desc:'Ausgezeichnet — letzte Zustandsprüfung 3. Mai 2026. Fotos verfügbar. Kleiner Kratzer auf Paneel 2 (dokumentiert).',
+    owners_next_desc:'Der Eigentümer benötigt diese bis zum <strong>10. Juni 2026</strong> für eine Produktion in Esch-sur-Alzette. Rückgabe dort ergibt <span style="color:var(--teal-600);font-weight:500">5% Rabatt</span>.',
+    choose_dropoff:'Rückgabeort wählen', drop1:'Lager des Eigentümers — Bonnevoie', drop2:'Esch-sur-Alzette (nächster Veranstaltungsort)', drop3:'Kirchberg Lager', no_change:'Keine Änderung',
+    pickup_date:'Abholdatum', return_date:'Rückgabedatum',
+    incentive_msg:'Rückgabe in Esch-sur-Alzette spart dem Eigentümer eine Fahrt — Sie erhalten 5% Rabatt.',
+    deposit:'Kaution (erstattbar)', platform_fee:'Plattformgebühr', total_due:'Jetzt fällig',
+    request_book:'Buchung anfragen', deposit_note:'Kaution innerhalb von 48h nach bestätigter Rückgabe erstattet.',
+    storage_title:'Nahgelegene Lager finden', storage_sub:'Kurzzeit- und Langzeitlager für Requisiten in ganz Luxemburg.',
+    map_search_placeholder:'Adresse oder Postleitzahl eingeben...', map_search_btn:'In der Nähe suchen',
+    storage_space:'Lagerplatz', partner_space:'Partnerplatz', your_location:'Ihr Standort',
+    list_space_title:'Haben Sie eine Garage oder einen Lagerraum?', list_space_body:'Listen Sie Ihren Raum auf und verdienen Sie, wenn Organisatoren Lagerplatz benötigen.',
+    list_my_space:'Meinen Raum listen',
+    schedule_title:'Mein Kalender', schedule_sub:'Verfolgen Sie, wann Ihre Requisiten verfügbar, gelagert oder benötigt werden.',
+    cal_rented:'Vermietet', cal_available:'Verfügbar', today:'Heute', storage_timeline:'Lager-Zeitplan',
+    tl1_title:'Paneele — im Lager', tl1_sub:'Garage Bonnevoie · bis 18. Mai',
+    tl2_title:'Paneele — vermietet an Marie D.',
+    tl3_title:'Paneele — verfügbar / Ihre Produktion', tl3_sub:'Ab 25. Mai · benötigt bis 10. Juni',
+    upcoming:'Bevorstehende Aktivität',
+    act1_title:'Paneele vermietet an Marie Dupont', act1_sub:'18.–24. Mai · €85,50 Einnahmen · Rückgabe: Bonnevoie',
+    act2_title:'Lagerbuchung läuft ab — Garage Bonnevoie', act2_sub:'17. Mai · Aktion erforderlich: erneuern oder umorganisieren',
+    act3_title:'Sie benötigen Paneele zurück — Produktion in Esch', act3_sub:'Ab 25. Mai · Bestätigt: Mieter gibt am 24. Mai zurück',
+    act4_title:'Bankettstühle vermietet ans Théâtre d\'Esch', act4_sub:'1.–5. Jun · €140 Einnahmen · Bestätigung ausstehend',
+    add_window:'+ Verfügbarkeitsfenster hinzufügen',
+    member_since:'Mitglied seit Januar 2026 · Luxemburg-Stadt', id_verified:'Identität verifiziert · LuxTrust',
+    trust_score:'Vertrauenspunktzahl', transactions:'Transaktionen',
+    earned:'Aus Vermietungen verdient', saved:'Bei Lagerung gespart', waste_prevented:'Abfall vermieden',
+    my_listings:'Meine Anzeigen',
+    ml1_title:'Bühnenhintergrund (3 Paneele)', ml1_meta:'€18/Tag · 12 Vermietungen · Nächste: vermietet 18.–24. Mai',
+    ml2_title:'Bankettstühle × 50', ml2_meta:'€35/Tag · 4 Vermietungen · Jetzt verfügbar',
+    ml3_title:'Kerzenleuchter × 8', ml3_meta:'€12/Tag · 2 Vermietungen · Jetzt verfügbar',
+    ml4_title:'PA-Lautsprechersystem (Paar)', ml4_meta:'€55/Tag · 3 Vermietungen · Jetzt verfügbar',
+    rented:'Vermietet', edit:'Bearbeiten', add_listing:'+ Neue Anzeige hinzufügen',
+    sign_in:'Anmelden', register:'Registrieren', email:'E-Mail', password:'Passwort',
+    or_luxtrust:'Oder anmelden mit <span style="color:var(--blue-600);cursor:pointer;font-weight:500">LuxTrust</span>',
+    full_name:'Vollständiger Name', create_account:'Konto erstellen',
+    list_prop_title:'Requisite oder Dekoration listen', list_prop_sub:'Füllen Sie die Details aus. Sie können Ihre Anzeige jederzeit bearbeiten oder entfernen.',
+    item_name:'Artikelname', item_name_placeholder:'z.B. Bühnenhintergrund', price_day:'Preis pro Tag (€)',
+    avail_from:'Verfügbar ab', avail_until:'Verfügbar bis', description:'Beschreibung',
+    desc_placeholder:'Zustand, Maße, Abholanweisungen...', pickup_location:'Abhol- / Lagerort',
+    next_event_location:'Nächster Veranstaltungsort des Eigentümers', cancel:'Abbrechen', publish:'Anzeige veröffentlichen',
+    book_storage_title:'Diesen Lagerplatz buchen', from_date:'Von Datum', to_date:'Bis Datum',
+    pickup_window:'Bevorzugtes Abholzeitfenster', storing_what:'Was lagern Sie?', storing_placeholder:'z.B. Paneele + 4 Kostümständer',
+    confirm_booking:'Buchung bestätigen', list_space_modal_sub:'Teilen Sie Ihre Garage oder Lagerfläche mit lokalen Veranstaltungsorganisatoren.',
+    space_type:'Art des Raums', type_garage:'Private Garage', type_basement:'Keller', type_commercial:'Gewerbliche Lagereinheit', type_warehouse:'Lagerhaus', type_other:'Sonstiges',
+    address:'Adresse', address_placeholder:'Straße, Postleitzahl, Stadt', size_m2:'Ungefähre Größe (m²)', access_method:'Zugangsmethode',
+    access1:'Eigentümer anwesend zur Übergabe', access2:'Zahlencode — Zugang bei Buchung geteilt', access3:'Smart Lock (App-basiert)', access4:'Schlüsselübergabe separat vereinbart',
+    confirm_booking_title:'Buchung bestätigen', confirm_desc:'Sie sind dabei, den <strong>Bühnenhintergrund</strong> von Jean M. anzufragen.',
+    rental_5:'Miete (5 Tage)', total_charged:'Heute belasteter Betrag', payment_method:'Zahlungsmethode', add_card:'Neue Karte hinzufügen',
+    confirm_terms:'Mit der Bestätigung stimmen Sie den Mietbedingungen und der Stornierungsrichtlinie zu. Der Eigentümer hat 24 Stunden zur Annahme.',
+    go_back:'Zurück', confirm_pay:'Bestätigen & zahlen',
+    add_window_title:'Verfügbarkeitsfenster hinzufügen', add_window_sub:'Informieren Sie Mieter über die Verfügbarkeit Ihrer Artikel.',
+    item_label:'Artikel', notes:'Hinweise für Mieter', notes_placeholder:'z.B. Muss ins Bonnevoie-Lager zurückgebracht werden', save:'Speichern',
+    welcome_back:'Willkommen zurück, Jean!', account_created:'Konto erstellt! Willkommen auf ressourcerie.lu',
+    listing_submitted:'Anzeige zur Überprüfung eingereicht!', storage_confirmed:'Lagerbuchung bestätigt!',
+    space_listed:'Raum erfolgreich gelistet!', booking_sent:'Buchungsanfrage gesendet!',
+    window_added:'Verfügbarkeitsfenster hinzugefügt!', edit_opened:'Anzeige bearbeiten geöffnet',
+    nearby_shown:'Zeige nächstgelegene Räume zu Ihrem Standort', results_count_label:' Requisiten in Ihrer Nähe',
+    drop_discount_label:'Rückgabe-Rabatt', drop_surcharge_label:'Rückgabe-Aufpreis',
+  },
+  lb: {
+    flag: '🇱🇺', label: 'Lëtzebuergesch',
+    nav_browse:'Requisiten duerchsichen', nav_storage:'Lager fannen', nav_schedule:'Mäi Kalenner', nav_profile:'Mäi Profil', nav_signin:'Aloggen',
+    hero_label:'Eng Initiative vun der Lëtzebuerger Regierung',
+    hero_title:'Requisiten & Dekor, <em>gedeelt</em><br>net ewechgehäit.',
+    hero_sub:'No der Virstellung sollten Är Bühnenrequisiten net am Poubelle landen. Verlounen, stockéieren a deelen Sie Eventsmatériel an der ganzer Lëtzebuerg.',
+    hero_cta1:'Verfügbar Requisiten sichen', hero_cta2:'Lagerplaz fannen',
+    hero_item1_title:'Bühnenhintergrond (3 Paneelen)', hero_item1_meta:'Verfügbar 12. Mee – 3. Jun · 2,4 km ewech',
+    hero_item2_title:'Bankettstuelen × 50', hero_item2_meta:'Elo verfügbar · 4,1 km ewech',
+    map_props:'Requisiten', map_storage:'Lager', available:'Verfügbar', per_day:'Dag',
+    stat1:'Requisiten & Artikelen', stat2:'Lagerplazen', stat3:'Vun Organisateure gespaart', stat4:'Offall verhënnert',
+    how_it_works:'Wéi et funktionéiert', features_title:'Alles wat Dir braucht, op enger Plaz.',
+    feat1_title:'No Lager sichen', feat1_body:'Verfügbar Lagerplazen no bei Iech oder no bei Ärem nächsten Event fannen.',
+    feat2_title:'Requisiten verlounen', feat2_body:'Listen Sie Är Requisiten op wann Dir se net braucht. Setzt Är Verfügbarkeet a Präisser fest.',
+    feat3_title:'Nahtlos plangen', feat3_body:'En gemeinsame Kalenner weist genau wann Requisiten verfügbar, am Lager oder néideg sinn.',
+    feat4_title:'Sécher Bezuelungen', feat4_body:'Integriert Bezuelungen mat sécheren Depoten. Locatairë sinn geschützt, Besëtzer ginn entschiedegt.',
+    feat5_title:'Kloug Réckgabe-Ureizer', feat5_body:'Gitt Matériel méi no um nächsten Event vum Besëtzer zréck a kritt Rabatt.',
+    feat6_title:'Verifizéiert Benotzer', feat6_body:'All Benotzer si verifizéiert. All Iwwergab enthält Fotoen mat Zäitstempel.',
+    filter_title:'Annoncen filteren', search_placeholder:'Requisiten, Dekor sichen...', filter_cat:'Kategorie',
+    cat_theatre:'Theaterrequisiten', cat_furniture:'Miwwelen', cat_lighting:'Beliichtung & Tech', cat_decor:'Stoffer & Hannergrënn', cat_outdoor:'Baussendekoration', cat_audio:'Audioausrüstung',
+    filter_avail:'Verfügbarkeet', avail_now:'Elo verfügbar', avail_range:'Zäitraum wielen', avail_any:'Jeder Zäit',
+    filter_dist:'Maximal Distanz', dist_all:'Ganz Lëtzebuerg',
+    filter_price:'Präis pro Dag', to:'bis',
+    view_grid:'Raster', view_map:'Kaart', view_list:'Lëscht',
+    back_listings:'Zréck op d\'Annoncen', rentals:'Verlounung', verified_owner:'Verifizéierten Besëtzer',
+    about_item:'Iwwer dësen Artikel', condition:'Zoustand', owners_next:'Nächst Notzung vum Besëtzer',
+    detail_desc:'Dräi professionell Bühnenhintergrondpaneelen, all 3m × 5m. Gemoolte Leinwand, neutrale Faarf. A guddem Zoustand. Transporttaschen abegraff.',
+    condition_desc:'Exzellent — läschte Kontroll den 3. Mee 2026. Fotoen verfügbar. Kleng Schramm op Panel 2 (dokumentéiert).',
+    owners_next_desc:'De Besëtzer brauch dës bis den <strong>10. Juni 2026</strong> fir eng Produktioun zu Esch-sur-Alzette. Réckgab do gëtt <span style="color:var(--teal-600);font-weight:500">5% Rabatt</span>.',
+    choose_dropoff:'Réckgabeplaz wielen', drop1:'Lager vum Besëtzer — Bonnevoie', drop2:'Esch-sur-Alzette (nächsten Event)', drop3:'Kirchberg Lager', no_change:'Keng Ännerung',
+    pickup_date:'Ofhueldatum', return_date:'Réckgabedatum',
+    incentive_msg:'Réckgab zu Esch-sur-Alzette spuert dem Besëtzer eng Rees — Dir kritt 5% Rabatt.',
+    deposit:'Deposit (erstattbar)', platform_fee:'Plattformgebühr', total_due:'Elo fälleg',
+    request_book:'Buchung ufroe', deposit_note:'Depot bannent 48h nom bestätegten Réckgab erstatt.',
+    storage_title:'No Lager sichen', storage_sub:'Kuerz- a Laangzäit Lagerplazen fir Requisiten zu Lëtzebuerg.',
+    map_search_placeholder:'Adress oder Postcode aginn...', map_search_btn:'An der Nohschaft sichen',
+    storage_space:'Lagerplaz', partner_space:'Partnerplaz', your_location:'Är Positioun',
+    list_space_title:'Hutt Dir eng Garasch oder e Lagerraum?', list_space_body:'Listen Är Plaz op a verdéngt wann Organisateuren Lager brauchen.',
+    list_my_space:'Mäi Raum listen',
+    schedule_title:'Mäi Kalenner', schedule_sub:'Verfolgt wann Är Requisiten verfügbar, am Lager oder néideg sinn.',
+    cal_rented:'Verlount', cal_available:'Verfügbar', today:'Haut', storage_timeline:'Lager-Zäitplang',
+    tl1_title:'Paneelen — am Lager', tl1_sub:'Garasch Bonnevoie · bis 18. Mee',
+    tl2_title:'Paneelen — verlount u Marie D.',
+    tl3_title:'Paneelen — verfügbar / Är Produktioun', tl3_sub:'Ab 25. Mee · néideg bis 10. Juni',
+    upcoming:'Komend Aktivitéit',
+    act1_title:'Paneelen verlount u Marie Dupont', act1_sub:'18.–24. Mee · €85,50 Akommes · Réckgab: Bonnevoie',
+    act2_title:'Lagerbuchung leeft of — Garasch Bonnevoie', act2_sub:'17. Mee · Aktioun néideg: erneieren oder ëmordenéieren',
+    act3_title:'Dir braucht Paneelen zréck — Produktioun zu Esch', act3_sub:'Ab 25. Mee · Bestätegt: Locataire gëtt den 24. Mee zréck',
+    act4_title:'Bankettstuelen verlount un Théâtre d\'Esch', act4_sub:'1.–5. Juni · €140 Akommes · Bestätegung ausständeg',
+    add_window:'+ Verfügbarkeetsfenster addéieren',
+    member_since:'Member zënter Januar 2026 · Lëtzebuerg-Stad', id_verified:'Identitéit verifizéiert · LuxTrust',
+    trust_score:'Vertrauenspunktzuel', transactions:'Transaktiounen',
+    earned:'Aus Verlounung verdéngt', saved:'Op Lagerung gespaart', waste_prevented:'Offall verhënnert',
+    my_listings:'Meng Annoncen',
+    ml1_title:'Bühnenhintergrond (3 Paneelen)', ml1_meta:'€18/Dag · 12 Verlounungen · Nächst: verlount 18.–24. Mee',
+    ml2_title:'Bankettstuelen × 50', ml2_meta:'€35/Dag · 4 Verlounungen · Elo verfügbar',
+    ml3_title:'Kandelaber × 8', ml3_meta:'€12/Dag · 2 Verlounungen · Elo verfügbar',
+    ml4_title:'PA-Lautsprecher-System (Paar)', ml4_meta:'€55/Dag · 3 Verlounungen · Elo verfügbar',
+    rented:'Verlount', edit:'Änneren', add_listing:'+ Nei Annonce addéieren',
+    sign_in:'Aloggen', register:'Registréieren', email:'E-Mail', password:'Passwuert',
+    or_luxtrust:'Oder aloggen mat <span style="color:var(--blue-600);cursor:pointer;font-weight:500">LuxTrust</span>',
+    full_name:'Vollständege Numm', create_account:'Kont erstellen',
+    list_prop_title:'Requisit oder Dekoration listen', list_prop_sub:'Fëllt d\'Details aus. Dir kënnt Är Annonce jederzeit änneren oder läschen.',
+    item_name:'Artikelnumm', item_name_placeholder:'z.B. Bühnenhintergrond', price_day:'Präis pro Dag (€)',
+    avail_from:'Verfügbar ab', avail_until:'Verfügbar bis', description:'Beschreiwung',
+    desc_placeholder:'Zoustand, Moossen, Ofholinstruktiounen...', pickup_location:'Ofhol- / Lagerplaz',
+    next_event_location:'Nächste Eventplaz vum Besëtzer', cancel:'Ofbriechen', publish:'Annonce verëffentlechen',
+    book_storage_title:'Dëse Lagerplaz buchen', from_date:'Vun Datum', to_date:'Bis Datum',
+    pickup_window:'Bevorzugt Ofholzäitfenster', storing_what:'Wat lagert Dir?', storing_placeholder:'z.B. Paneelen + 4 Kostümständer',
+    confirm_booking:'Buchung bestätegen', list_space_modal_sub:'Deelt Är Garasch oder Lagerfläch mat lokalen Eventorganisateuren.',
+    space_type:'Art vum Raum', type_garage:'Privat Garasch', type_basement:'Keller', type_commercial:'Kommerziell Lagerunitéit', type_warehouse:'Lagerhaus', type_other:'Aner',
+    address:'Adress', address_placeholder:'Strooss, Postcode, Stad', size_m2:'Ongeféier Gréisst (m²)', access_method:'Zougangsmethode',
+    access1:'Besëtzer präsent fir Iwwergab', access2:'Zuelescode — Zougang bei Buchung gedeelt', access3:'Smart Lock (App-baséiert)', access4:'Schlëssel-Iwwergab separat vereinbart',
+    confirm_booking_title:'Buchung bestätegen', confirm_desc:'Dir maacht eng Ufro fir de <strong>Bühnenhintergrond</strong> vu Jean M.',
+    rental_5:'Miete (5 Deeg)', total_charged:'Haut belaascht', payment_method:'Bezuelungsmethode', add_card:'Nei Kaart addéieren',
+    confirm_terms:'Mat der Bestätegung stëmmt Dir den Mietbedingungen a der Stornéierungspolitik zou. De Besëtzer huet 24 Stonnen fir unzehuelen.',
+    go_back:'Zréck', confirm_pay:'Bestätegen & bezuelen',
+    add_window_title:'Verfügbarkeetsfenster addéieren', add_window_sub:'Informéiert Locatairë iwwer d\'Verfügbarkeet vun Ären Artikelen.',
+    item_label:'Artikel', notes:'Notizen fir Locatairën', notes_placeholder:'z.B. Muss an de Bonnevoie-Lager zréckbruecht ginn', save:'Späicheren',
+    welcome_back:'Wëllkomm zréck, Jean!', account_created:'Kont erstallt! Wëllkomm op ressourcerie.lu',
+    listing_submitted:'Annonce zur Iwwerpréiwung agereecht!', storage_confirmed:'Lagerbuchung bestätegt!',
+    space_listed:'Raum erfolgräich gelëscht!', booking_sent:'Buchungsufro gesendet!',
+    window_added:'Verfügbarkeetsfenster addéiert!', edit_opened:'Annonce änneren opgemeet',
+    nearby_shown:'Weist Plazen no bei Ärer Positioun', results_count_label:' Requisiten no bei Iech',
+    drop_discount_label:'Réckgabe-Rabatt', drop_surcharge_label:'Réckgabe-Opschlag',
+  }
+};
+
+let currentLang = 'en';
+function t(key) { return langs[currentLang][key] || langs['en'][key] || key; }
+
+function setLang(code) {
+  currentLang = code;
+  const l = langs[code];
+  document.getElementById('lang-flag').textContent = l.flag;
+  document.getElementById('lang-label').textContent = l.label;
+  document.querySelectorAll('.lang-option').forEach(o => o.classList.remove('active'));
+  document.querySelector(`.lang-option[onclick="setLang('${code}')"]`).classList.add('active');
+  document.getElementById('lang-dropdown').classList.remove('open');
+  // apply all i18n keys
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (l[key] !== undefined) el.innerHTML = l[key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (l[key] !== undefined) el.placeholder = l[key];
+  });
+  // re-render dynamic content
+  filterListings();
+  renderStorageCards();
+  renderMapPins();
+}
+
+function toggleLang() {
+  document.getElementById('lang-dropdown').classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('#lang-dropdown')) document.getElementById('lang-dropdown').classList.remove('open');
+});
+
+// ══════════════════════════════════════════
+// LISTINGS DATA
+// ══════════════════════════════════════════
+const listings = [
+  { emoji:'🎭', bg:'',         title_en:'Theatrical backdrop set (3 panels)', meta_en:'3 panels · 2.4 km · Available now', price:18, tag:'Theatre' },
+  { emoji:'🪑', bg:'amber-bg', title_en:'Banquet chairs × 50',                meta_en:'Set of 50 · 4.1 km · Available now', price:35, tag:'Furniture' },
+  { emoji:'🌿', bg:'teal-bg',  title_en:'Artificial foliage walls × 6',        meta_en:'6 panels · 1.8 km · Avail. from 18 May', price:22, tag:'Décor' },
+  { emoji:'💡', bg:'',         title_en:'LED spotlight rigs × 12',             meta_en:'12 units · 6.3 km · Available now', price:60, tag:'Lighting' },
+  { emoji:'🏛️', bg:'amber-bg', title_en:'Roman column props × 4',              meta_en:'4 columns · 3.2 km · Available now', price:28, tag:'Theatre' },
+  { emoji:'🎋', bg:'teal-bg',  title_en:'Japanese garden set',                 meta_en:'Full set · 7.0 km · Avail. from 25 May', price:45, tag:'Décor' },
+  { emoji:'🔊', bg:'slate-bg', title_en:'PA speaker system (pair)',             meta_en:'Pair · 2.9 km · Available now', price:55, tag:'Audio' },
+  { emoji:'🎪', bg:'',         title_en:'Circus tent frame (small)',            meta_en:'4m diam. · 5.5 km · Available now', price:80, tag:'Outdoor' },
+  { emoji:'🕯️', bg:'amber-bg', title_en:'Candelabra set × 8',                  meta_en:'8 pieces · 1.2 km · Available now', price:12, tag:'Theatre' },
+  { emoji:'🎭', bg:'teal-bg',  title_en:'Victorian furniture set',              meta_en:'6 pieces · 3.8 km · Available now', price:40, tag:'Furniture' },
+];
+
+const tagClasses = { Theatre:'', Furniture:'', Lighting:'', Décor:'teal', Outdoor:'amber', Audio:'amber' };
+
+function renderListings(data) {
+  const grid = document.getElementById('listings-grid');
+  if (!data.length) { grid.innerHTML = `<p style="color:var(--slate-600);font-size:0.9rem;grid-column:1/-1">No results found.</p>`; document.getElementById('results-count').textContent = '0' + t('results_count_label'); return; }
+  grid.innerHTML = data.map(l => `
+    <div class="listing-card" onclick="openDetail('${l.title_en.replace(/'/g,"\\'")}', ${l.price}, '${l.emoji}', '${l.bg}')">
+      <div class="listing-thumb ${l.bg}">${l.emoji}</div>
+      <div class="listing-body">
+        <h4>${l.title_en}</h4>
+        <div class="listing-meta">${l.meta_en}</div>
+        <div class="listing-footer">
+          <div class="listing-rate">€${l.price} <span>/ ${t('per_day')}</span></div>
+          <span class="tag ${tagClasses[l.tag] || ''}">${l.tag}</span>
+        </div>
+      </div>
+    </div>`).join('');
+  document.getElementById('results-count').textContent = data.length + t('results_count_label');
+}
+
+function filterListings() {
+  const q = (document.getElementById('search-input').value || '').toLowerCase();
+  const minP = parseFloat(document.getElementById('price-min').value) || 0;
+  const maxP = parseFloat(document.getElementById('price-max').value) || 99999;
+  const checked = Array.from(document.querySelectorAll('[data-cat]:checked')).map(el => el.dataset.cat);
+  renderListings(listings.filter(l => l.title_en.toLowerCase().includes(q) && l.price >= minP && l.price <= maxP && checked.includes(l.tag)));
+}
+
+function setViewTab(el) { document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active')); el.classList.add('active'); showToast(el.textContent + (currentLang === 'en' ? ' view selected' : '')); }
+
+// ══════════════════════════════════════════
+// DETAIL
+// ══════════════════════════════════════════
+let currentPrice = 18, dropoffModifier = 0;
+
+function openDetail(title, price, emoji, bg) {
+  document.getElementById('detail-title').textContent = title;
+  document.getElementById('detail-price').innerHTML = `€${price} <span>/ <span data-i18n="per_day">${t('per_day')}</span></span>`;
+  const thumb = document.getElementById('detail-thumb');
+  thumb.textContent = emoji;
+  const bgMap = {'amber-bg':'var(--amber-50)', 'teal-bg':'var(--teal-50)', 'slate-bg':'var(--slate-50)', '':'var(--blue-50)'};
+  thumb.style.background = bgMap[bg] || 'var(--blue-50)';
+  currentPrice = price; dropoffModifier = 0;
+  document.querySelectorAll('.dropoff-option').forEach(o => o.classList.remove('selected'));
+  document.querySelector('.dropoff-option').classList.add('selected');
+  document.querySelector('.dropoff-option input').checked = true;
+  document.getElementById('incentive-banner').style.display = 'none';
+  recalcBooking();
+  showPage('detail');
+}
+
+function recalcBooking() {
+  const p = document.getElementById('pickup-date').value;
+  const r = document.getElementById('return-date').value;
+  if (!p || !r) return;
+  const days = Math.max(1, Math.round((new Date(r) - new Date(p)) / 86400000));
+  const subtotal = currentPrice * days;
+  const deposit = Math.round(subtotal * 0.5);
+  const adjustAmt = Math.round(subtotal * Math.abs(dropoffModifier) / 100 * 100) / 100;
+  const adjustSign = dropoffModifier < 0 ? -1 : 1;
+  const total = subtotal + deposit + (adjustSign * adjustAmt) + 3.50;
+  document.getElementById('sum-days').textContent = `€${currentPrice} × ${days} ${t('per_day')}${days !== 1 ? 's' : ''}`;
+  document.getElementById('sum-subtotal').textContent = `€${subtotal.toFixed(2)}`;
+  document.getElementById('sum-deposit').textContent = `€${deposit.toFixed(2)}`;
+  document.getElementById('sum-total').textContent = `€${total.toFixed(2)}`;
+  const adjRow = document.getElementById('sum-adjust-row');
+  if (dropoffModifier !== 0) {
+    adjRow.style.display = 'flex';
+    document.getElementById('sum-adjust-label').textContent = dropoffModifier < 0 ? t('drop_discount_label') : t('drop_surcharge_label');
+    document.getElementById('sum-adjust-val').textContent = (dropoffModifier < 0 ? '−' : '+') + `€${adjustAmt.toFixed(2)}`;
+  } else { adjRow.style.display = 'none'; }
+}
+
+function selectDropoff(el, modifier) {
+  document.querySelectorAll('.dropoff-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected'); el.querySelector('input').checked = true;
+  dropoffModifier = modifier;
+  document.getElementById('incentive-banner').style.display = modifier < 0 ? 'block' : 'none';
+  recalcBooking();
+}
+
+// ══════════════════════════════════════════
+// STORAGE DATA & MAP
+// ══════════════════════════════════════════
+const storageSpaces = [
+  { icon:'🏠', iconCls:'blue', name:'Private garage — Bonnevoie', desc:'Dry, secure, ground-floor. Suitable for large props.', size:'24 m²', dist:'1.8 km', access:'By arrangement', price:'€8/day', x:38, y:32, type:'blue' },
+  { icon:'🏢', iconCls:'amber', name:'Commercial unit — Kirchberg', desc:'Professional unit with coded access, 24/7.', size:'40 m²', dist:'3.4 km', access:'24/7 coded', price:'€15/day', x:68, y:22, type:'amber' },
+  { icon:'🚗', iconCls:'blue', name:'Private garage — Limpertsberg', desc:'Clean garage, easy van access. Owner on-site.', size:'18 m²', dist:'2.1 km', access:'Owner-coordinated', price:'€6/day', x:22, y:55, type:'blue' },
+  { icon:'🏭', iconCls:'amber', name:'Warehouse bay — Hollerich', desc:'Large industrial space, forklift access.', size:'120 m²', dist:'4.7 km', access:'Business hours', price:'€40/day', x:55, y:68, type:'amber' },
+  { icon:'🏠', iconCls:'blue', name:'Private garage — Belair', desc:'Newly renovated, climate-controlled, alarm system.', size:'30 m²', dist:'2.8 km', access:'Smart lock', price:'€11/day', x:30, y:68, type:'blue' },
+  { icon:'🏢', iconCls:'amber', name:'Storage unit — Gasperich', desc:'Secure ground-floor unit, loading bay available.', size:'55 m²', dist:'5.2 km', access:'24/7 coded', price:'€18/day', x:68, y:58, type:'amber' },
+];
+
+let selectedStorageIdx = null;
+
+function renderStorageCards() {
+  const list = document.getElementById('storage-list');
+  list.innerHTML = storageSpaces.map((s, i) => `
+    <div class="storage-card ${selectedStorageIdx === i ? 'selected' : ''}" onclick="selectStorage(${i})">
+      <div class="storage-card-icon ${s.iconCls}">${s.icon}</div>
+      <div class="storage-card-info">
+        <h4>${s.name}</h4>
+        <p>${s.desc}</p>
+        <div class="storage-details">
+          <div class="storage-detail"><strong>${s.size}</strong></div>
+          <div class="storage-detail">${s.dist}</div>
+          <div class="storage-detail">${s.access}</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;flex-shrink:0">
+        <div class="storage-price-badge">${s.price}</div>
+        <button style="font-size:0.75rem;background:var(--blue-800);color:white;border:none;padding:0.3rem 0.75rem;border-radius:100px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap" onclick="event.stopPropagation();openStorageModal(${i})" data-i18n="confirm_booking">${t('confirm_booking')}</button>
+      </div>
+    </div>`).join('');
+}
+
+function selectStorage(idx) {
+  selectedStorageIdx = idx;
+  renderStorageCards();
+  renderMapPins();
+}
+
+function openStorageModal(idx) {
+  const s = storageSpaces[idx];
+  document.getElementById('storage-modal-desc').textContent = `${s.name} · ${s.price} · ${s.size}`;
+  openModal('storage-modal');
+}
+
+function renderMapPins() {
+  const container = document.getElementById('map-pins');
+  container.innerHTML = storageSpaces.map((s, i) => `
+    <div class="map-pin ${s.type}" style="left:${s.x}%;top:${s.y}%" onclick="selectStorage(${i})">
+      <div class="map-pin-dot"><span>${s.icon}</span></div>
+      <div class="map-tooltip"><strong>${s.name}</strong><br>${s.size} · ${s.price}</div>
+    </div>`).join('');
+}
+
+let userPinEl = null;
+function searchMapAddress() {
+  const val = document.getElementById('map-address-input').value.trim();
+  if (!val) return;
+  // Simulate placing a user pin at a random-ish location
+  const x = 35 + Math.random() * 20;
+  const y = 35 + Math.random() * 20;
+  if (userPinEl) userPinEl.remove();
+  userPinEl = document.createElement('div');
+  userPinEl.className = 'map-pin user';
+  userPinEl.style.left = x + '%';
+  userPinEl.style.top = y + '%';
+  userPinEl.innerHTML = `<div class="map-pin-dot"><span style="transform:rotate(45deg);font-size:0.7rem;color:white">📍</span></div><div class="map-tooltip"><strong>${val}</strong><br>${t('your_location')}</div>`;
+  document.getElementById('map-pins').appendChild(userPinEl);
+  document.getElementById('user-pin-legend').style.display = 'flex';
+  const label = document.getElementById('map-result-label');
+  label.textContent = t('nearby_shown');
+  label.classList.add('show');
+  setTimeout(() => label.classList.remove('show'), 3000);
+  showToast(t('nearby_shown'));
+}
+
+// ══════════════════════════════════════════
+// CALENDAR
+// ══════════════════════════════════════════
+const monthNames = {
+  en:['January','February','March','April','May','June','July','August','September','October','November','December'],
+  fr:['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
+  de:['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
+  lb:['Januar','Februar','Mäerz','Abrëll','Mee','Juni','Juli','August','September','Oktober','November','Dezember'],
+};
+let calYear = 2026, calMonth = 4;
+const bookedDays = [18,19,20,21,22,23,24], availDays = [25,26,27,28,29,30,31];
+
+function renderCalendar() {
+  const names = monthNames[currentLang] || monthNames.en;
+  document.getElementById('cal-month-label').textContent = names[calMonth] + ' ' + calYear;
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const start = firstDay === 0 ? 6 : firstDay - 1;
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const today = new Date();
+  const isCurrentMonth = calYear === today.getFullYear() && calMonth === today.getMonth();
+  let html = ['Mo','Tu','We','Th','Fr','Sa','Su'].map(d => `<div class="cal-day-name">${d}</div>`).join('');
+  for (let i = 0; i < start; i++) html += `<div class="cal-day empty"></div>`;
+  for (let d = 1; d <= daysInMonth; d++) {
+    let cls = 'cal-day';
+    if (isCurrentMonth && d === today.getDate()) cls += ' today';
+    else if (bookedDays.includes(d) && calMonth === 4) cls += ' booked';
+    else if (availDays.includes(d) && calMonth === 4) cls += ' available';
+    html += `<div class="${cls}" onclick="showToast('${d} ${names[calMonth]}')">${d}</div>`;
+  }
+  document.getElementById('cal-grid').innerHTML = html;
+}
+
+function changeMonth(dir) {
+  calMonth += dir;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  renderCalendar();
+}
+
+// ══════════════════════════════════════════
+// UI HELPERS
+// ══════════════════════════════════════════
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'schedule') renderCalendar();
+}
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function overlayClose(e, id) { if (e.target === e.currentTarget) closeModal(id); }
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg; toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+function setAuthTab(el, formId) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('signin-form').style.display = formId === 'signin-form' ? 'block' : 'none';
+  document.getElementById('register-form').style.display = formId === 'register-form' ? 'block' : 'none';
+}
+function selectSlot(el) {
+  if (el.classList.contains('unavailable')) return;
+  document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+filterListings();
+renderStorageCards();
+renderMapPins();
+renderCalendar();
+recalcBooking();
+</script>
+</body>
+</html>
