@@ -1136,10 +1136,11 @@ function setLang(code) {
     const key = el.dataset.i18nPlaceholder;
     if (l[key] !== undefined) el.placeholder = l[key];
   });
-  // re-render dynamic content
+  // re-render all dynamic content
   filterListings();
   renderStorageCards();
   renderMapPins();
+  renderCalendar();
 }
 
 function toggleLang() {
@@ -1229,6 +1230,7 @@ const tagClasses = { Theatre:'', Furniture:'', Lighting:'', Décor:'teal', Outdo
 
 function renderListings(data) {
   const grid = document.getElementById('listings-grid');
+  if (!grid) return;
   const lang = currentLang;
   if (!data.length) { grid.innerHTML = `<p style="color:var(--slate-600);font-size:0.9rem;grid-column:1/-1">No results found.</p>`; document.getElementById('results-count').textContent = '0' + t('results_count_label'); return; }
   grid.innerHTML = data.map(l => {
@@ -1319,35 +1321,78 @@ function selectDropoff(el, modifier) {
 // STORAGE DATA & MAP
 // ══════════════════════════════════════════
 const storageSpaces = [
-  { icon:'🏠', iconCls:'blue', name:'Private garage — Bonnevoie', desc:'Dry, secure, ground-floor. Suitable for large props.', size:'24 m²', dist:'1.8 km', access:'By arrangement', price:'€8/day', x:38, y:32, type:'blue' },
-  { icon:'🏢', iconCls:'amber', name:'Commercial unit — Kirchberg', desc:'Professional unit with coded access, 24/7.', size:'40 m²', dist:'3.4 km', access:'24/7 coded', price:'€15/day', x:68, y:22, type:'amber' },
-  { icon:'🚗', iconCls:'blue', name:'Private garage — Limpertsberg', desc:'Clean garage, easy van access. Owner on-site.', size:'18 m²', dist:'2.1 km', access:'Owner-coordinated', price:'€6/day', x:22, y:55, type:'blue' },
-  { icon:'🏭', iconCls:'amber', name:'Warehouse bay — Hollerich', desc:'Large industrial space, forklift access.', size:'120 m²', dist:'4.7 km', access:'Business hours', price:'€40/day', x:55, y:68, type:'amber' },
-  { icon:'🏠', iconCls:'blue', name:'Private garage — Belair', desc:'Newly renovated, climate-controlled, alarm system.', size:'30 m²', dist:'2.8 km', access:'Smart lock', price:'€11/day', x:30, y:68, type:'blue' },
-  { icon:'🏢', iconCls:'amber', name:'Storage unit — Gasperich', desc:'Secure ground-floor unit, loading bay available.', size:'55 m²', dist:'5.2 km', access:'24/7 coded', price:'€18/day', x:68, y:58, type:'amber' },
+  {
+    icon:'🏠', iconCls:'blue', x:38, y:32, type:'blue', size:'24 m²', dist:'1.8 km', price:'€8/jour',
+    name_en:'Private garage — Bonnevoie', desc_en:'Dry, secure, ground-floor. Suitable for large props.', access_en:'By arrangement',
+    name_fr:'Garage privé — Bonnevoie', desc_fr:'Sec, sécurisé, rez-de-chaussée. Idéal pour les grandes décorations.', access_fr:'Sur rendez-vous',
+    name_de:'Private Garage — Bonnevoie', desc_de:'Trocken, sicher, ebenerdig. Geeignet für große Requisiten.', access_de:'Nach Vereinbarung',
+    name_lb:'Privat Garasch — Bonnevoie', desc_lb:'Dréchen, sécher, Äerdgeschoss. Gëeegent fir grouss Requisiten.', access_lb:'No Ofsproch',
+  },
+  {
+    icon:'🏢', iconCls:'amber', x:68, y:22, type:'amber', size:'40 m²', dist:'3.4 km', price:'€15/jour',
+    name_en:'Commercial unit — Kirchberg', desc_en:'Professional unit with coded access, 24/7.', access_en:'24/7 coded',
+    name_fr:'Unité commerciale — Kirchberg', desc_fr:'Unité professionnelle avec accès codé, 24h/24.', access_fr:'Code 24h/24',
+    name_de:'Gewerbeeinheit — Kirchberg', desc_de:'Professionelle Einheit mit Codezugang, 24/7.', access_de:'Code 24/7',
+    name_lb:'Gewerbläit — Kirchberg', desc_lb:'Professionell Eenheet mat Codezougang, 24/7.', access_lb:'Code 24/7',
+  },
+  {
+    icon:'🚗', iconCls:'blue', x:22, y:55, type:'blue', size:'18 m²', dist:'2.1 km', price:'€6/jour',
+    name_en:'Private garage — Limpertsberg', desc_en:'Clean garage, easy van access. Owner on-site.', access_en:'Owner-coordinated',
+    name_fr:'Garage privé — Limpertsberg', desc_fr:'Garage propre, accès camionnette facile. Propriétaire sur place.', access_fr:'Coordiné avec propriétaire',
+    name_de:'Private Garage — Limpertsberg', desc_de:'Saubere Garage, einfacher Transporter-Zugang. Eigentümer vor Ort.', access_de:'Eigentümer koordiniert',
+    name_lb:'Privat Garasch — Limpertsberg', desc_lb:'Propper Garasch, einfachen Zougang. Besëtzer op der Plaz.', access_lb:'Besëtzer koordinéiert',
+  },
+  {
+    icon:'🏭', iconCls:'amber', x:55, y:68, type:'amber', size:'120 m²', dist:'4.7 km', price:'€40/jour',
+    name_en:'Warehouse bay — Hollerich', desc_en:'Large industrial space, forklift access.', access_en:'Business hours',
+    name_fr:'Entrepôt — Hollerich', desc_fr:'Grand espace industriel, accès chariot élévateur.', access_fr:'Heures ouvrables',
+    name_de:'Lagerhalle — Hollerich', desc_de:'Große Industriefläche, Gabelstaplerzugang.', access_de:'Geschäftszeiten',
+    name_lb:'Lagerhaus — Hollerich', desc_lb:'Grousse Industrieraum, Gabelstaplerzougang.', access_lb:'Geschäftszäiten',
+  },
+  {
+    icon:'🏠', iconCls:'blue', x:30, y:68, type:'blue', size:'30 m²', dist:'2.8 km', price:'€11/jour',
+    name_en:'Private garage — Belair', desc_en:'Newly renovated, climate-controlled, alarm system.', access_en:'Smart lock',
+    name_fr:'Garage privé — Belair', desc_fr:'Récemment rénové, climatisé, système d\'alarme.', access_fr:'Serrure connectée',
+    name_de:'Private Garage — Belair', desc_de:'Neu renoviert, klimatisiert, Alarmsystem.', access_de:'Smart Lock',
+    name_lb:'Privat Garasch — Belair', desc_lb:'Nei renovéiert, klimatiséiert, Alarmsystem.', access_lb:'Smart Lock',
+  },
+  {
+    icon:'🏢', iconCls:'amber', x:68, y:58, type:'amber', size:'55 m²', dist:'5.2 km', price:'€18/jour',
+    name_en:'Storage unit — Gasperich', desc_en:'Secure ground-floor unit, loading bay available.', access_en:'24/7 coded',
+    name_fr:'Unité de stockage — Gasperich', desc_fr:'Unité sécurisée en rez-de-chaussée, quai de chargement disponible.', access_fr:'Code 24h/24',
+    name_de:'Lagereinheit — Gasperich', desc_de:'Sichere Erdgeschosseinheit, Ladebereich verfügbar.', access_de:'Code 24/7',
+    name_lb:'Lagerunitéit — Gasperich', desc_lb:'Sécher Äerdgeschoss-Eenheet, Ladebereich verfügbar.', access_lb:'Code 24/7',
+  },
 ];
 
 let selectedStorageIdx = null;
 
 function renderStorageCards() {
   const list = document.getElementById('storage-list');
-  list.innerHTML = storageSpaces.map((s, i) => `
+  if (!list) { console.warn('storage-list not found'); return; }
+  const lang = currentLang;
+  list.innerHTML = storageSpaces.map((s, i) => {
+    const name   = s['name_'   + lang] || s.name_en;
+    const desc   = s['desc_'   + lang] || s.desc_en;
+    const access = s['access_' + lang] || s.access_en;
+    return `
     <div class="storage-card ${selectedStorageIdx === i ? 'selected' : ''}" onclick="selectStorage(${i})">
       <div class="storage-card-icon ${s.iconCls}">${s.icon}</div>
       <div class="storage-card-info">
-        <h4>${s.name}</h4>
-        <p>${s.desc}</p>
+        <h4>${name}</h4>
+        <p>${desc}</p>
         <div class="storage-details">
           <div class="storage-detail"><strong>${s.size}</strong></div>
           <div class="storage-detail">${s.dist}</div>
-          <div class="storage-detail">${s.access}</div>
+          <div class="storage-detail">${access}</div>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.5rem;flex-shrink:0">
         <div class="storage-price-badge">${s.price}</div>
-        <button style="font-size:0.75rem;background:var(--blue-800);color:white;border:none;padding:0.3rem 0.75rem;border-radius:100px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap" onclick="event.stopPropagation();openStorageModal(${i})" data-i18n="confirm_booking">${t('confirm_booking')}</button>
+        <button style="font-size:0.75rem;background:var(--blue-800);color:white;border:none;padding:0.3rem 0.75rem;border-radius:100px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap" onclick="event.stopPropagation();openStorageModal(${i})">${t('confirm_booking')}</button>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 function selectStorage(idx) {
@@ -1358,17 +1403,22 @@ function selectStorage(idx) {
 
 function openStorageModal(idx) {
   const s = storageSpaces[idx];
-  document.getElementById('storage-modal-desc').textContent = `${s.name} · ${s.price} · ${s.size}`;
+  const name = s['name_' + currentLang] || s.name_en;
+  document.getElementById('storage-modal-desc').textContent = `${name} · ${s.price} · ${s.size}`;
   openModal('storage-modal');
 }
 
 function renderMapPins() {
   const container = document.getElementById('map-pins');
-  container.innerHTML = storageSpaces.map((s, i) => `
+  const lang = currentLang;
+  container.innerHTML = storageSpaces.map((s, i) => {
+    const name = s['name_' + lang] || s.name_en;
+    return `
     <div class="map-pin ${s.type}" style="left:${s.x}%;top:${s.y}%" onclick="selectStorage(${i})">
       <div class="map-pin-dot"><span>${s.icon}</span></div>
-      <div class="map-tooltip"><strong>${s.name}</strong><br>${s.size} · ${s.price}</div>
-    </div>`).join('');
+      <div class="map-tooltip"><strong>${name}</strong><br>${s.size} · ${s.price}</div>
+    </div>`;
+  }).join('');
 }
 
 let userPinEl = null;
@@ -1440,6 +1490,8 @@ function showPage(id) {
   document.getElementById('page-' + id).classList.add('active');
   window.scrollTo(0, 0);
   if (id === 'schedule') renderCalendar();
+  if (id === 'browse') filterListings();
+  if (id === 'storage') { renderStorageCards(); renderMapPins(); }
 }
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
